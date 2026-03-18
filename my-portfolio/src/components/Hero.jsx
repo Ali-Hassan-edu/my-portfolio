@@ -22,12 +22,14 @@ export default function Hero({ info }) {
 
   const fmt = (n) => (n < 10 ? `0${n}` : `${n}`);
 
+  const esc = (str) => (str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
   const generateCV = () => {
     const cvHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>${info?.name ?? "Ali Hassan"} — CV</title>
+<title>${esc(info?.name ?? "Ali Hassan")} — CV</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.6;}
@@ -51,20 +53,20 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
 <div class="page">
 <div class="header">
 <div>
-<div class="name">${info?.name ?? "Ali Hassan"}</div>
-<div class="tagline">${info?.tagline ?? ""}</div>
-<div class="tagline" style="margin-top:2px;color:#888;">Software Engineering Student · ${info?.university ?? "COMSATS University"}</div>
+<div class="name">${esc(info?.name ?? "Ali Hassan")}</div>
+<div class="tagline">${esc(info?.tagline ?? "")}</div>
+<div class="tagline" style="margin-top:2px;color:#888;">Software Engineering Student · ${esc(info?.university ?? "COMSATS University")}</div>
 </div>
 <div class="contact-info">
-<div><a href="mailto:${info?.email}">${info?.email}</a></div>
-<div><a href="${info?.linkedin}" target="_blank">LinkedIn Profile</a></div>
-<div><a href="${info?.github}" target="_blank">GitHub Profile</a></div>
-<div>${info?.location ?? "Pakistan"}</div>
+<div><a href="mailto:${esc(info?.email)}">${esc(info?.email)}</a></div>
+<div><a href="${esc(info?.linkedin)}" target="_blank">LinkedIn Profile</a></div>
+<div><a href="${esc(info?.github)}" target="_blank">GitHub Profile</a></div>
+<div>${esc(info?.location ?? "Pakistan")}</div>
 </div>
 </div>
 <div class="section">
 <div class="section-title">Profile</div>
-<p class="bio">${info?.bio ?? ""}</p>
+<p class="bio">${esc(info?.bio ?? "")}</p>
 </div>
 <div class="section">
 <div class="section-title">Technical Skills</div>
