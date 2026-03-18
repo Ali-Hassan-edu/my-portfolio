@@ -1,47 +1,54 @@
 import React, { useState } from 'react';
-import Modal from 'react-modal';
+import './AppProjects.css';
 
-const AppProjects = ({ app }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const AppProjects = ({ projects }) => {
+    const [selectedProject, setSelectedProject] = useState(null);
 
-  const openModal = (index) => {
-    setCurrentImageIndex(index);
-    setIsOpen(true);
-  };
+    const openModal = (project) => {
+        setSelectedProject(project);
+    };
 
-  const closeModal = () => setIsOpen(false);
+    const closeModal = () => {
+        setSelectedProject(null);
+    };
 
-  const goToPrevious = () => {
-    setCurrentImageIndex((currentImageIndex - 1 + app.screenshots.length) % app.screenshots.length);
-  };
+    const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    };
 
-  const goToNext = () => {
-    setCurrentImageIndex((currentImageIndex + 1) % app.screenshots.length);
-  };
+    React.useEffect(() => {
+        if (selectedProject) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [selectedProject]);
 
-  return (
-    <div className="gallery">
-      <div className="thumbnail-grid">
-        {app.screenshots.map((screenshot, index) => (
-          <img 
-            key={index} 
-            src={screenshot} 
-            alt={`Screenshot ${index}`} 
-            onClick={() => openModal(index)} 
-            className="thumbnail" 
-          />
-        ))}
-      </div>
+    return (
+        <div className='thumbnail-grid'>
+            {projects.map((project, index) => (
+                <div key={project.id} className='thumbnail' onClick={() => openModal(project)}>
+                    <img src={project.thumbnail} alt={project.title} />
+                </div>
+            ))}
 
-      <Modal isOpen={isOpen} onRequestClose={closeModal}>
-        <button onClick={closeModal}>Close</button>
-        <button onClick={goToPrevious} disabled={currentImageIndex === 0}>Previous</button>
-        <button onClick={goToNext} disabled={currentImageIndex === app.screenshots.length - 1}>Next</button>
-        <img src={app.screenshots[currentImageIndex]} alt={`Screenshot ${currentImageIndex}`} />
-      </Modal>
-    </div>
-  );
+            {selectedProject && (
+                <div className='modal' onClick={closeModal}>
+                    <div className='modal-content' onClick={(e) => e.stopPropagation()}>
+                        <span className='close' onClick={closeModal}>&times;</span>
+                        <img src={selectedProject.image} alt={selectedProject.title} />
+                        <div className='prev-next'>
+                            <button onClick={() => setSelectedProject(projects[(projects.indexOf(selectedProject) - 1 + projects.length) % projects.length])}>Prev</button>
+                            <button onClick={() => setSelectedProject(projects[(projects.indexOf(selectedProject) + 1) % projects.length])}>Next</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default AppProjects;
