@@ -284,7 +284,7 @@ function WebProjectsTab({ projects, setProjects, showMsg }) {
 
   async function remove(id) {
     if (!confirm("Delete this project?")) return;
-    try { await deleteProject(id); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
+    try { await deleteProject(id, "web"); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
     catch (e) { alert("Error: " + e.message); }
   }
 
@@ -383,7 +383,7 @@ function AppProjectsTab({ projects, setProjects, showMsg }) {
 
   async function remove(id) {
     if (!confirm("Delete this project?")) return;
-    try { await deleteProject(id); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
+    try { await deleteProject(id, "app"); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
     catch (e) { alert("Error: " + e.message); }
   }
 

@@ -38,8 +38,6 @@ body { background: #080810; color: #fff; font-family: 'DM Sans', sans-serif; ove
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
 section[id] { scroll-margin-top: 80px; }
 
 .grad-text {

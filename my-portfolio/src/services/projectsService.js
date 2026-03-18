@@ -1,16 +1,23 @@
 import { supabase } from "./supabase";
 
+function tableFor(type) {
+  return type === "app" ? "app_projects" : "web_projects";
+}
+
 export async function getProjects(type) {
-  let query = supabase.from("projects").select("*").order("year", { ascending: false });
-  if (type) query = query.eq("type", type);
-  const { data, error } = await query;
+  const table = tableFor(type);
+  const { data, error } = await supabase
+    .from(table)
+    .select("*")
+    .order("year", { ascending: false });
   if (error) return [];
   return data || [];
 }
 
 export async function addProject(project) {
+  const table = tableFor(project.type);
   const { data, error } = await supabase
-    .from("projects")
+    .from(table)
     .insert([project])
     .select()
     .single();
@@ -19,8 +26,9 @@ export async function addProject(project) {
 }
 
 export async function updateProject(id, project) {
+  const table = tableFor(project.type);
   const { data, error } = await supabase
-    .from("projects")
+    .from(table)
     .update(project)
     .eq("id", id)
     .select()
@@ -29,7 +37,8 @@ export async function updateProject(id, project) {
   return data;
 }
 
-export async function deleteProject(id) {
-  const { error } = await supabase.from("projects").delete().eq("id", id);
+export async function deleteProject(id, type) {
+  const table = tableFor(type);
+  const { error } = await supabase.from(table).delete().eq("id", id);
   if (error) throw error;
 }

@@ -2,7 +2,7 @@ import { supabase } from "./supabase";
 
 export async function getProfile() {
   const { data, error } = await supabase
-    .from("profile")
+    .from("profiles")
     .select("*")
     .single();
   if (error) return null;
@@ -11,7 +11,7 @@ export async function getProfile() {
 
 export async function updateProfile(profile) {
   const { data, error } = await supabase
-    .from("profile")
+    .from("profiles")
     .upsert({ ...profile, id: 1 })
     .select()
     .single();
