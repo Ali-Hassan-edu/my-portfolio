@@ -1,27 +1,4 @@
-import { useState, useEffect } from "react";
-
 export default function Hero({ info }) {
-  const [y2, setY2] = useState(0);
-  const [y14, setY14] = useState(0);
-  const [y5, setY5] = useState(0);
-
-  useEffect(() => {
-    const animate = (setter, target) => {
-      let n = 0;
-      const step = target / (1200 / 16);
-      const t = setInterval(() => {
-        n += step;
-        if (n >= target) { setter(target); clearInterval(t); }
-        else setter(Math.floor(n));
-      }, 16);
-    };
-    animate(setY2, info?.years_exp ?? 2);
-    animate(setY14, info?.projects_count ?? 14);
-    animate(setY5, 5);
-  }, [info]);
-
-  const fmt = (n) => (n < 10 ? `0${n}` : `${n}`);
-
   const esc = (str) => (str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   const generateCV = () => {
@@ -93,7 +70,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
       <div className="container" style={{ width: "100%" }}>
         <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 56, alignItems: "center" }}>
           {/* LEFT */}
-          <div className="hero-left" style={{ animation: "fadeUp 0.6s ease forwards" }}>
+          <div className="hero-left">
             <div className="hero-available" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: "rgba(77,255,180,0.08)", border: "1px solid rgba(77,255,180,0.2)", marginBottom: 28 }}>
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4DFFB4", flexShrink: 0 }} />
               <span style={{ fontSize: 11, color: "#4DFFB4", fontWeight: 600, letterSpacing: "0.06em" }}>
@@ -117,9 +94,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
 
             <div className="stats-row hero-stats" style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
               {[
-                { n: fmt(y2), l: "Years Exp." },
-                { n: fmt(y14), l: "Projects" },
-                { n: fmt(y5), l: "Technologies" },
+                { n: info?.years_exp ?? 2, l: "Years Exp." },
+                { n: info?.projects_count ?? 14, l: "Projects" },
+                { n: 5, l: "Technologies" },
               ].map((s) => (
                 <div key={s.l}>
                   <div style={{ fontFamily: "Syne, sans-serif", fontSize: 42, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{s.n}<span style={{ color: "#FF4D6D" }}>+</span></div>

@@ -92,94 +92,252 @@ export default function AdminPage({ onBack }) {
     );
   }
 
-  const tabs = [
-    { key: "dashboard", label: "Dashboard" },
-    { key: "profile", label: "Profile" },
-    { key: "web", label: "Web Projects" },
-    { key: "app", label: "App Projects" },
-    { key: "blog", label: "Blog" },
-    { key: "settings", label: "Settings" },
+  const navItems = [
+    { key: "dashboard", label: "Dashboard", icon: "◈" },
+    { key: "profile", label: "Profile", icon: "◎" },
+    { key: "web", label: "Web Projects", icon: "⬡" },
+    { key: "app", label: "App Projects", icon: "◉" },
+    { key: "blog", label: "Blog Posts", icon: "▦" },
+    { key: "settings", label: "Settings", icon: "◆" },
   ];
 
+  const currentNav = navItems.find((n) => n.key === tab);
+
   return (
-    <div style={{ minHeight: "100vh", paddingTop: 64 }}>
-      {/* Admin Header */}
-      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", background: "rgba(8,8,16,0.98)", backdropFilter: "blur(20px)", padding: "0 24px", position: "sticky", top: 64, zIndex: 100 }}>
-        <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 56 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: "linear-gradient(135deg,#FF4D6D,#A78BFA)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 13, color: "#fff" }}>⚙</div>
+    <div style={{ minHeight: "100vh", paddingTop: 64, display: "flex" }}>
+      {/* Sidebar */}
+      <aside
+        style={{
+          width: 220,
+          flexShrink: 0,
+          background: "rgba(255,255,255,0.02)",
+          borderRight: "1px solid rgba(255,255,255,0.07)",
+          position: "sticky",
+          top: 64,
+          height: "calc(100vh - 64px)",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+        }}
+      >
+        {/* Sidebar brand */}
+        <div style={{ padding: "24px 20px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{
+              width: 34, height: 34, borderRadius: 9,
+              background: "linear-gradient(135deg,#FF4D6D,#A78BFA)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 14, color: "#fff",
+              flexShrink: 0,
+            }}>AH</div>
             <div>
-              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 15, color: "#fff" }}>Admin Panel</div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)" }}>Portfolio management</div>
+              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 13, color: "#fff" }}>Admin Panel</div>
+              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginTop: 1 }}>Ali Hassan</div>
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            {message && <span style={{ fontSize: 12, color: "#4DFFB4", fontWeight: 600 }}>✓ {message}</span>}
-            <button onClick={onBack} className="btn-secondary" style={{ padding: "7px 16px", fontSize: 12 }}>← Portfolio</button>
+        </div>
+
+        {/* Nav links */}
+        <nav style={{ padding: "12px 10px", flex: 1 }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,255,255,0.2)", textTransform: "uppercase", padding: "8px 10px 6px" }}>
+            Navigation
+          </div>
+          {navItems.map((item) => {
+            const isActive = tab === item.key;
+            return (
+              <button
+                key={item.key}
+                onClick={() => setTab(item.key)}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 12px",
+                  borderRadius: 9,
+                  background: isActive ? "rgba(255,77,109,0.1)" : "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  marginBottom: 2,
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
+              >
+                <span style={{ fontSize: 15, color: isActive ? "#FF4D6D" : "rgba(255,255,255,0.3)", flexShrink: 0, width: 18, textAlign: "center" }}>
+                  {item.icon}
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: isActive ? "#fff" : "rgba(255,255,255,0.5)" }}>
+                  {item.label}
+                </span>
+                {isActive && (
+                  <div style={{ marginLeft: "auto", width: 4, height: 4, borderRadius: "50%", background: "#FF4D6D", flexShrink: 0 }} />
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Sidebar footer */}
+        <div style={{ padding: "12px 10px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          <button
+            onClick={onBack}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "10px 12px",
+              borderRadius: 9,
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+          >
+            <span style={{ fontSize: 14, color: "rgba(255,255,255,0.3)" }}>←</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.4)" }}>Back to Portfolio</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        {/* Top bar */}
+        <div style={{
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          background: "rgba(8,8,16,0.95)",
+          backdropFilter: "blur(20px)",
+          padding: "0 28px",
+          height: 54,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          position: "sticky",
+          top: 64,
+          zIndex: 90,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>Admin</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.15)" }}>›</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{currentNav?.label}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {message && (
+              <span style={{ fontSize: 12, color: "#4DFFB4", fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}>
+                <span style={{ fontSize: 14 }}>✓</span> {message}
+              </span>
+            )}
+            <div style={{
+              padding: "4px 12px",
+              borderRadius: 20,
+              background: "rgba(77,255,180,0.08)",
+              border: "1px solid rgba(77,255,180,0.15)",
+              fontSize: 11,
+              color: "#4DFFB4",
+              fontWeight: 600,
+            }}>
+              ● Connected
+            </div>
           </div>
         </div>
-        {/* Tab bar */}
-        <div className="container" style={{ display: "flex", gap: 0, overflowX: "auto" }}>
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              style={{
-                padding: "12px 20px", background: "none", border: "none", cursor: "pointer",
-                fontSize: 13, fontWeight: 600, color: tab === t.key ? "#FF4D6D" : "rgba(255,255,255,0.4)",
-                borderBottom: tab === t.key ? "2px solid #FF4D6D" : "2px solid transparent",
-                transition: "all 0.2s", whiteSpace: "nowrap",
-              }}
-            >{t.label}</button>
-          ))}
-        </div>
-      </div>
 
-      <div className="container" style={{ paddingTop: 36, paddingBottom: 80 }}>
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "60px 0", color: "rgba(255,255,255,0.3)" }}>Loading data…</div>
-        ) : (
-          <>
-            {tab === "dashboard" && <DashboardTab webProjects={webProjects} appProjects={appProjects} blogPosts={blogPosts} profile={profile} />}
-            {tab === "profile" && <ProfileTab profile={profile} setProfile={setProfile} showMsg={showMsg} />}
-            {tab === "web" && <WebProjectsTab projects={webProjects} setProjects={setWebProjects} showMsg={showMsg} />}
-            {tab === "app" && <AppProjectsTab projects={appProjects} setProjects={setAppProjects} showMsg={showMsg} />}
-            {tab === "blog" && <BlogTab posts={blogPosts} setPosts={setBlogPosts} showMsg={showMsg} />}
-            {tab === "settings" && <SettingsTab showMsg={showMsg} />}
-          </>
-        )}
+        {/* Page content */}
+        <div style={{ padding: "32px 28px 80px", flex: 1 }}>
+          {loading ? (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", color: "rgba(255,255,255,0.3)", fontSize: 14, gap: 10 }}>
+              <span style={{ fontSize: 18 }}>⟳</span> Loading data…
+            </div>
+          ) : (
+            <>
+              {tab === "dashboard" && <DashboardTab webProjects={webProjects} appProjects={appProjects} blogPosts={blogPosts} profile={profile} onTabChange={setTab} />}
+              {tab === "profile" && <ProfileTab profile={profile} setProfile={setProfile} showMsg={showMsg} />}
+              {tab === "web" && <WebProjectsTab projects={webProjects} setProjects={setWebProjects} showMsg={showMsg} />}
+              {tab === "app" && <AppProjectsTab projects={appProjects} setProjects={setAppProjects} showMsg={showMsg} />}
+              {tab === "blog" && <BlogTab posts={blogPosts} setPosts={setBlogPosts} showMsg={showMsg} />}
+              {tab === "settings" && <SettingsTab showMsg={showMsg} />}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 /* ── DASHBOARD ── */
-function DashboardTab({ webProjects, appProjects, blogPosts, profile }) {
+function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChange }) {
   const stats = [
-    { label: "Web Projects", value: webProjects.length, color: "#4DFFB4" },
-    { label: "App Projects", value: appProjects.length, color: "#A78BFA" },
-    { label: "Blog Posts", value: blogPosts.length, color: "#FF4D6D" },
-    { label: "Published Posts", value: blogPosts.filter((p) => p.published).length, color: "#38BDF8" },
+    { label: "Web Projects", value: webProjects.length, color: "#4DFFB4", tab: "web" },
+    { label: "App Projects", value: appProjects.length, color: "#A78BFA", tab: "app" },
+    { label: "Blog Posts", value: blogPosts.length, color: "#FF4D6D", tab: "blog" },
+    { label: "Published", value: blogPosts.filter((p) => p.published).length, color: "#38BDF8", tab: "blog" },
   ];
   return (
     <div>
-      <SectionHeading title="Dashboard" subtitle="Overview of your portfolio" />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))", gap: 16, marginBottom: 36 }}>
+      <SectionHeading title="Dashboard" subtitle="Overview of your portfolio content" />
+
+      {/* Stats cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 14, marginBottom: 32 }}>
         {stats.map((s) => (
-          <div key={s.label} style={{ padding: "22px 24px", borderRadius: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <div style={{ fontFamily: "Syne, sans-serif", fontSize: 38, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
+          <button
+            key={s.label}
+            onClick={() => onTabChange(s.tab)}
+            style={{
+              padding: "20px 22px", borderRadius: 14,
+              background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)",
+              cursor: "pointer", textAlign: "left", transition: "background 0.15s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.055)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+          >
+            <div style={{ fontFamily: "Syne, sans-serif", fontSize: 36, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6 }}>{s.label}</div>
-          </div>
+          </button>
         ))}
       </div>
-      <div style={{ padding: "22px 24px", borderRadius: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>Profile</div>
-        <div style={{ fontFamily: "Syne, sans-serif", fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{profile?.name}</div>
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>{profile?.tagline}</div>
-        <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-          <span style={{ padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, background: profile?.available ? "rgba(77,255,180,0.1)" : "rgba(255,77,109,0.1)", color: profile?.available ? "#4DFFB4" : "#FF4D6D" }}>
+
+      {/* Profile card */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+        <div style={{ padding: "22px 24px", borderRadius: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 12 }}>Profile</div>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{profile?.name}</div>
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 12 }}>{profile?.tagline}</div>
+          <span style={{
+            padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600,
+            background: profile?.available ? "rgba(77,255,180,0.1)" : "rgba(255,77,109,0.1)",
+            color: profile?.available ? "#4DFFB4" : "#FF4D6D",
+          }}>
             {profile?.available ? "Open to Work" : "Not Available"}
           </span>
+        </div>
+
+        {/* Quick actions */}
+        <div style={{ padding: "22px 24px", borderRadius: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 12 }}>Quick Actions</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {[
+              { label: "Add Web Project", tab: "web", color: "#4DFFB4" },
+              { label: "Add App Project", tab: "app", color: "#A78BFA" },
+              { label: "Write Blog Post", tab: "blog", color: "#FF4D6D" },
+              { label: "Edit Profile", tab: "profile", color: "#38BDF8" },
+            ].map((a) => (
+              <button
+                key={a.tab}
+                onClick={() => onTabChange(a.tab)}
+                style={{
+                  textAlign: "left", padding: "8px 12px", borderRadius: 8,
+                  background: "transparent", border: `1px solid rgba(255,255,255,0.07)`,
+                  color: a.color, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+              >
+                + {a.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -284,7 +442,7 @@ function WebProjectsTab({ projects, setProjects, showMsg }) {
 
   async function remove(id) {
     if (!confirm("Delete this project?")) return;
-    try { await deleteProject(id); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
+    try { await deleteProject(id, "web"); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
     catch (e) { alert("Error: " + e.message); }
   }
 
@@ -383,7 +541,7 @@ function AppProjectsTab({ projects, setProjects, showMsg }) {
 
   async function remove(id) {
     if (!confirm("Delete this project?")) return;
-    try { await deleteProject(id); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
+    try { await deleteProject(id, "app"); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
     catch (e) { alert("Error: " + e.message); }
   }
 
