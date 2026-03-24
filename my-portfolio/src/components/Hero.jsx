@@ -63,10 +63,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
   };
 
   return (
-    <section id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden", paddingTop: 80 }}>
-      {/* Subtle background gradient */}
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(167,139,250,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
-
+    <section id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", paddingTop: 80 }}>
       <div className="container" style={{ width: "100%" }}>
         <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 56, alignItems: "center" }}>
           {/* LEFT */}
@@ -78,9 +75,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
               </span>
             </div>
 
-            <h1 className="hero-h1" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, lineHeight: 0.9, letterSpacing: "-2px", marginBottom: 24, fontSize: "clamp(44px,8vw,88px)" }}>
+            <h1 className="hero-h1" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, lineHeight: 0.95, letterSpacing: "-2px", marginBottom: 24, fontSize: "clamp(44px,8vw,88px)" }}>
               <div style={{ color: "#fff" }}>ALI</div>
-              <div style={{ background: "linear-gradient(135deg,#FF4D6D,#A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>HASSAN</div>
+              <div style={{ color: "#FF4D6D" }}>HASSAN</div>
             </h1>
 
             <p className="hero-p" style={{ fontSize: "clamp(14px,1.5vw,16px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
@@ -113,7 +110,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
               ].map((s) => (
                 <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{
                   padding: "8px 18px", borderRadius: 8, background: s.bg, border: `1px solid ${s.border}`,
-                  color: s.color, fontSize: 12, fontWeight: 600, transition: "opacity 0.2s",
+                  color: s.color, fontSize: 12, fontWeight: 600,
                   textDecoration: "none",
                 }}>{s.label}</a>
               ))}
@@ -129,15 +126,21 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
               display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12,
               position: "relative", overflow: "hidden",
             }}>
-              <div style={{ fontFamily: "Syne, sans-serif", fontSize: 72, fontWeight: 800, color: "rgba(255,255,255,0.06)" }}>AH</div>
+              {info?.profile_pic ? (
+                 <img src={info.profile_pic} alt={info?.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                 <div style={{ fontFamily: "Syne, sans-serif", fontSize: 72, fontWeight: 800, color: "rgba(255,255,255,0.06)" }}>
+                   {info?.name ? info.name.split(' ').map(n => n[0]).join('') : "AH"}
+                 </div>
+              )}
               <div style={{
                 position: "absolute", bottom: 0, left: 0, right: 0,
                 padding: "16px", background: "linear-gradient(to top, rgba(8,8,16,0.95), transparent)",
               }}>
                 <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "#fff" }}>{info?.name ?? "Ali Hassan"}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>Software Engineer · COMSATS</div>
-                <div style={{ display: "flex", gap: 5, marginTop: 8 }}>
-                  {["React", "Node.js", "Android"].map((t) => (
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>Software Developer</div>
+                <div style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                  {["Planning", "Development", "Deployment"].map((t) => (
                     <span key={t} style={{ padding: "2px 8px", borderRadius: 10, background: "rgba(167,139,250,0.15)", fontSize: 10, color: "#A78BFA", fontWeight: 600 }}>{t}</span>
                   ))}
                 </div>

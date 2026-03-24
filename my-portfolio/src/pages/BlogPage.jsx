@@ -28,7 +28,7 @@ export default function BlogPage({ posts, onBack }) {
           </button>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FF4D6D", marginBottom: 10, textTransform: "uppercase" }}>BLOG</div>
           <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(32px,5vw,52px)", letterSpacing: "-1.5px", color: "#fff", marginBottom: 8 }}>
-            Articles &amp; <span style={{ background: "linear-gradient(135deg,#FF4D6D,#A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Insights</span>
+            Articles &amp; <span style={{ color: "#FF4D6D" }}>Insights</span>
           </h1>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", maxWidth: 520 }}>
             Thoughts on software development, mobile apps, and the tech I use.

@@ -14,7 +14,7 @@ export default function Skills() {
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#4DFFB4", marginBottom: 10, textTransform: "uppercase" }}>CAPABILITIES</div>
           <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)" }}>
-            Skills &amp; <span style={{ background: "linear-gradient(135deg,#4DFFB4,#38BDF8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Technologies</span>
+            Skills &amp; <span style={{ color: "#4DFFB4" }}>Technologies</span>
           </h2>
         </div>
         <div className="skills-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>

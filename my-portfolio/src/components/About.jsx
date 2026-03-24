@@ -5,7 +5,7 @@ export default function About({ info }) {
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FF4D6D", marginBottom: 10, textTransform: "uppercase" }}>WHO I AM</div>
           <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)" }}>
-            About <span style={{ background: "linear-gradient(135deg,#FF4D6D,#A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Me</span>
+            About <span style={{ color: "#FF4D6D" }}>Me</span>
           </h2>
         </div>
         <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}>

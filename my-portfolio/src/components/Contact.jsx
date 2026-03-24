@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function Contact({ info }) {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const WHATSAPP_NUMBER = "923XXXXXXXXX";
+  const WHATSAPP_NUMBER = "923270196155";
 
   const openWhatsApp = () => {
     const name = form.name || "Website visitor";
@@ -18,7 +18,7 @@ export default function Contact({ info }) {
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FF4D6D", marginBottom: 10, textTransform: "uppercase" }}>GET IN TOUCH</div>
           <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)", marginBottom: 14 }}>
-            Contact <span style={{ background: "linear-gradient(135deg,#FF4D6D,#A78BFA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Me</span>
+            Contact <span style={{ color: "#FF4D6D" }}>Me</span>
           </h2>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", maxWidth: 460, margin: "0 auto" }}>Share your details and connect via WhatsApp or email.</p>
         </div>

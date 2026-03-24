@@ -5,6 +5,7 @@
 create table if not exists profiles (
   id             integer primary key default 1,
   name           text not null default 'Ali Hassan',
+  profile_pic    text,
   tagline        text,
   bio            text,
   university     text,

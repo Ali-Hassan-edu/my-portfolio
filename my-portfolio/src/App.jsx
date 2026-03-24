@@ -41,8 +41,7 @@ img { max-width: 100%; display: block; }
 section[id] { scroll-margin-top: 80px; }
 
 .grad-text {
-  background: linear-gradient(135deg, #FF4D6D, #A78BFA, #4DFFB4);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  color: #A78BFA;
 }
 
 .section { padding: 80px 0; }
@@ -50,7 +49,7 @@ section[id] { scroll-margin-top: 80px; }
 
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
-  background: linear-gradient(135deg, #FF4D6D, #A78BFA);
+  background: #FF4D6D;
   color: #fff; border: none; padding: 12px 26px; border-radius: 8px;
   font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
   letter-spacing: 0.03em; cursor: pointer; text-decoration: none;
@@ -108,6 +107,9 @@ select option { background: #111; }
   .contact-grid { grid-template-columns: 1fr !important; }
   .footer-inner { flex-direction: column !important; gap: 14px !important; text-align: center !important; }
   .section { padding: 60px 0; }
+}
+@media (max-width: 768px) {
+  .card[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
 }
 @media (max-width: 640px) {
   .nav-links-desktop { display: none !important; }
