@@ -26,9 +26,9 @@ export default function BlogPage({ posts, onBack }) {
           <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", fontSize: 13, marginBottom: 20, display: "flex", alignItems: "center", gap: 6 }}>
             ← Back to Portfolio
           </button>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FF4D6D", marginBottom: 10, textTransform: "uppercase" }}>BLOG</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FFB800", marginBottom: 10, textTransform: "uppercase" }}>BLOG</div>
           <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(32px,5vw,52px)", letterSpacing: "-1.5px", color: "#fff", marginBottom: 8 }}>
-            Articles &amp; <span style={{ color: "#FF4D6D" }}>Insights</span>
+            Articles &amp; <span style={{ color: "#FFB800" }}>Insights</span>
           </h1>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", maxWidth: 520 }}>
             Thoughts on software development, mobile apps, and the tech I use.
@@ -51,9 +51,9 @@ export default function BlogPage({ posts, onBack }) {
                 onClick={() => setActiveTag(tag)}
                 style={{
                   padding: "5px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-                  background: activeTag === tag ? "rgba(255,77,109,0.15)" : "rgba(255,255,255,0.04)",
-                  color: activeTag === tag ? "#FF4D6D" : "rgba(255,255,255,0.4)",
-                  outline: activeTag === tag ? "1px solid rgba(255,77,109,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                  background: activeTag === tag ? "rgba(255,184,0,0.15)" : "rgba(255,255,255,0.04)",
+                  color: activeTag === tag ? "#FFB800" : "rgba(255,255,255,0.4)",
+                  outline: activeTag === tag ? "1px solid rgba(255,184,0,0.35)" : "1px solid rgba(255,255,255,0.08)",
                   transition: "all 0.2s",
                 }}
               >{tag}</button>
@@ -89,7 +89,7 @@ function BlogCard({ post, onClick }) {
       <div style={{ padding: "18px 20px 20px", flex: 1, display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
           {(post.tags || []).slice(0, 3).map((tag) => (
-            <span key={tag} style={{ padding: "2px 9px", borderRadius: 8, background: "rgba(255,77,109,0.1)", fontSize: 10, color: "#FF4D6D", fontWeight: 600 }}>{tag}</span>
+            <span key={tag} style={{ padding: "2px 9px", borderRadius: 8, background: "rgba(255,184,0,0.1)", fontSize: 10, color: "#FFB800", fontWeight: 600 }}>{tag}</span>
           ))}
         </div>
         <h3 style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 8, lineHeight: 1.35 }}>{post.title}</h3>
@@ -113,7 +113,7 @@ function BlogPostDetail({ post, onBack }) {
         </button>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
           {(post.tags || []).map((tag) => (
-            <span key={tag} style={{ padding: "3px 10px", borderRadius: 8, background: "rgba(255,77,109,0.1)", fontSize: 11, color: "#FF4D6D", fontWeight: 600 }}>{tag}</span>
+            <span key={tag} style={{ padding: "3px 10px", borderRadius: 8, background: "rgba(255,184,0,0.1)", fontSize: 11, color: "#FFB800", fontWeight: 600 }}>{tag}</span>
           ))}
         </div>
         <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(24px,4vw,42px)", letterSpacing: "-1px", color: "#fff", marginBottom: 16, lineHeight: 1.15 }}>{post.title}</h1>

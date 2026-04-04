@@ -23,9 +23,9 @@ export default function WebProjects({ projects }) {
     <section id="web-projects" className="section" style={{ background: "rgba(255,255,255,0.01)" }}>
       <div className="container">
         <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#4DFFB4", marginBottom: 10, textTransform: "uppercase" }}>WEB DEVELOPMENT</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FFB800", marginBottom: 10, textTransform: "uppercase" }}>WEB DEVELOPMENT</div>
           <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)", marginBottom: 20 }}>
-            Web <span style={{ color: "#4DFFB4" }}>Projects</span>
+            Web <span style={{ color: "#FFB800" }}>Projects</span>
           </h2>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", maxWidth: 480, margin: "0 auto 28px" }}>
             Full-stack web applications, dashboards and APIs.
@@ -38,9 +38,9 @@ export default function WebProjects({ projects }) {
                   onClick={() => setFilter(f)}
                   style={{
                     padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-                    background: filter === f ? "rgba(77,255,180,0.15)" : "rgba(255,255,255,0.04)",
-                    color: filter === f ? "#4DFFB4" : "rgba(255,255,255,0.4)",
-                    outline: filter === f ? "1px solid rgba(77,255,180,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                    background: filter === f ? "rgba(255,184,0,0.15)" : "rgba(255,255,255,0.04)",
+                    color: filter === f ? "#FFB800" : "rgba(255,255,255,0.4)",
+                    outline: filter === f ? "1px solid rgba(255,184,0,0.35)" : "1px solid rgba(255,255,255,0.08)",
                     transition: "all 0.2s",
                   }}
                 >{f}</button>
@@ -60,8 +60,8 @@ export default function WebProjects({ projects }) {
                     <img src={p.image_url} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   </div>
                 ) : (
-                  <div style={{ height: 120, background: `linear-gradient(135deg,${p.color || "#4DFFB4"}14,rgba(255,255,255,0.02))`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontFamily: "Syne, sans-serif", fontSize: 32, fontWeight: 800, color: p.color || "#4DFFB4", opacity: 0.2 }}>WEB</span>
+                  <div style={{ height: 120, background: "rgba(14,165,233,0.05)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span style={{ fontFamily: "Syne, sans-serif", fontSize: 32, fontWeight: 800, color: p.color || "#FFB800", opacity: 0.2 }}>WEB</span>
                   </div>
                 )}
                 <div style={{ padding: "18px 20px 20px", display: "flex", flexDirection: "column", flex: 1 }}>
@@ -73,13 +73,13 @@ export default function WebProjects({ projects }) {
                   {techList.length > 0 && (
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 14 }}>
                       {techList.map((t) => (
-                        <span key={t} style={{ padding: "2px 9px", background: "rgba(77,255,180,0.08)", borderRadius: 8, fontSize: 10, color: "#4DFFB4", fontWeight: 500 }}>{t}</span>
+                        <span key={t} style={{ padding: "2px 9px", background: "rgba(255,184,0,0.08)", borderRadius: 8, fontSize: 10, color: "#FFB800", fontWeight: 500 }}>{t}</span>
                       ))}
                     </div>
                   )}
                   <div style={{ display: "flex", gap: 10 }}>
                     {p.live_link && (
-                      <a href={p.live_link} target="_blank" rel="noreferrer" style={{ fontSize: 12, fontWeight: 700, color: "#4DFFB4", textDecoration: "none" }}>Live Demo ↗</a>
+                      <a href={p.live_link} target="_blank" rel="noreferrer" style={{ fontSize: 12, fontWeight: 700, color: "#FFB800", textDecoration: "none" }}>Live Demo ↗</a>
                     )}
                     {p.github_link && (
                       <a href={p.github_link} target="_blank" rel="noreferrer" style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>GitHub ↗</a>
@@ -98,9 +98,9 @@ export default function WebProjects({ projects }) {
 function SectionHeader() {
   return (
     <div style={{ textAlign: "center", marginBottom: 52 }}>
-      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#4DFFB4", marginBottom: 10, textTransform: "uppercase" }}>WEB DEVELOPMENT</div>
+      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#0ea5e9", marginBottom: 10, textTransform: "uppercase" }}>WEB DEVELOPMENT</div>
       <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)" }}>
-        Web <span style={{ color: "#4DFFB4" }}>Projects</span>
+        Web <span style={{ color: "#0ea5e9" }}>Projects</span>
       </h2>
     </div>
   );

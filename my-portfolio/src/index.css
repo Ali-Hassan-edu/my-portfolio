@@ -16,8 +16,8 @@ body {
     width: 100%;
     min-height: 100vh;
     overflow-x: hidden;
-    background: #080810;
-    color: #ffffff;
+    background: #0f172a;
+    color: #f8fafc;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;

@@ -53,7 +53,7 @@ export default function Nav({ active, page, onPageChange }) {
         >
           <div style={{
             width: 32, height: 32, borderRadius: 8,
-            background: "linear-gradient(135deg,#FF4D6D,#A78BFA)",
+            background: "#0ea5e9",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 14, color: "#fff",
           }}>AH</div>

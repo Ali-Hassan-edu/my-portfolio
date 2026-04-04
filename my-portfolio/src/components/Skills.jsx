@@ -1,20 +1,20 @@
 export default function Skills() {
   const groups = [
-    { name: "Frontend & Web", color: "#FF4D6D", skills: ["React", "HTML/CSS", "JavaScript", "TypeScript", "Tailwind", "Next.js", "Vite"] },
-    { name: "Backend", color: "#A78BFA", skills: ["Node.js", "Express", "Python", "REST APIs", "Firebase", "Supabase"] },
-    { name: "Mobile", color: "#4DFFB4", skills: ["Android", "Java", "Kotlin", "SQLite", "Firebase Android"] },
-    { name: "Tools & Databases", color: "#38BDF8", skills: ["Git", "GitHub", "VS Code", "Postman", "MySQL", "MongoDB"] },
-    { name: "AI & Data", color: "#FB923C", skills: ["Python", "TensorFlow", "scikit-learn", "Pandas", "ML/AI"] },
-    { name: "Systems & Other", color: "#F9A8D4", skills: ["C++", "Data Structures", "Algorithms", "Linux"] },
+    { name: "Frontend & Web", color: "#FFB800", skills: ["React", "HTML/CSS", "JavaScript", "TypeScript", "Tailwind", "Next.js", "Vite"] },
+    { name: "Backend", color: "#FF8C00", skills: ["Node.js", "Express", "Python", "REST APIs", "Firebase", "Supabase"] },
+    { name: "Mobile", color: "#FFA500", skills: ["Android", "Java", "Kotlin", "SQLite", "Firebase Android"] },
+    { name: "Tools & Databases", color: "#D4AF37", skills: ["Git", "GitHub", "VS Code", "Postman", "MySQL", "MongoDB"] },
+    { name: "AI & Data", color: "#0ea5e9", skills: ["Python", "TensorFlow", "scikit-learn", "Pandas", "ML/AI"] },
+    { name: "Systems & Other", color: "#0ea5e9", skills: ["C++", "Data Structures", "Algorithms", "Linux"] },
   ];
 
   return (
     <section id="skills" className="section">
       <div className="container">
         <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#4DFFB4", marginBottom: 10, textTransform: "uppercase" }}>CAPABILITIES</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#0ea5e9", marginBottom: 10, textTransform: "uppercase" }}>CAPABILITIES</div>
           <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)" }}>
-            Skills &amp; <span style={{ color: "#4DFFB4" }}>Technologies</span>
+            Skills &amp; <span style={{ color: "#0ea5e9" }}>Technologies</span>
           </h2>
         </div>
         <div className="skills-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 18 }}>

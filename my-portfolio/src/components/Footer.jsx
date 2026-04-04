@@ -6,7 +6,7 @@ export default function Footer({ info }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               width: 28, height: 28, borderRadius: 6,
-              background: "linear-gradient(135deg,#FF4D6D,#A78BFA)",
+              background: "linear-gradient(135deg, #FFB800, #FF8C00)",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 12, color: "#fff",
             }}>AH</div>

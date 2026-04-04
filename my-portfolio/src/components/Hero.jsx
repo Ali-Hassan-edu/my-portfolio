@@ -11,13 +11,13 @@ export default function Hero({ info }) {
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.6;}
 .page{max-width:780px;margin:0 auto;padding:42px 48px;}
-.header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #FF4D6D;padding-bottom:22px;margin-bottom:22px;}
+.header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0ea5e9;padding-bottom:22px;margin-bottom:22px;}
 .name{font-size:34px;font-weight:900;letter-spacing:-1px;color:#111;}
 .tagline{font-size:13px;color:#666;margin-top:4px;}
 .contact-info{text-align:right;font-size:12px;color:#444;line-height:1.8;}
-.contact-info a{color:#FF4D6D;text-decoration:none;}
+.contact-info a{color:#0ea5e9;text-decoration:none;}
 .section{margin-bottom:24px;}
-.section-title{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#FF4D6D;margin-bottom:10px;border-bottom:1px solid #f0e0e4;padding-bottom:6px;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#0ea5e9;margin-bottom:10px;border-bottom:1px solid #e2e8f0;padding-bottom:6px;}
 .bio{font-size:13px;color:#444;line-height:1.8;}
 .skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .skill-group-title{font-weight:700;font-size:12px;color:#333;margin-bottom:5px;}
@@ -68,25 +68,16 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
         <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 56, alignItems: "center" }}>
           {/* LEFT */}
           <div className="hero-left">
-            <div className="hero-available" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 20, background: "rgba(77,255,180,0.08)", border: "1px solid rgba(77,255,180,0.2)", marginBottom: 28 }}>
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4DFFB4", flexShrink: 0 }} />
-              <span style={{ fontSize: 11, color: "#4DFFB4", fontWeight: 600, letterSpacing: "0.06em" }}>
-                {info?.available ? "OPEN TO WORK" : "NOT AVAILABLE"}
-              </span>
-            </div>
-
             <h1 className="hero-h1" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, lineHeight: 0.95, letterSpacing: "-2px", marginBottom: 24, fontSize: "clamp(44px,8vw,88px)" }}>
               <div style={{ color: "#fff" }}>ALI</div>
-              <div style={{ color: "#FF4D6D" }}>HASSAN</div>
+              <div style={{ background: "linear-gradient(135deg, #FFB800, #FF8C00, #D4AF37)", backgroundSize: "200% 200%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "gradientShift 6s ease infinite" }}>HASSAN</div>
             </h1>
 
-            <p className="hero-p" style={{ fontSize: "clamp(14px,1.5vw,16px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
-              {info?.tagline} — student at <strong style={{ color: "#fff" }}>COMSATS University</strong>, building with React, Node.js &amp; Android.
+            <p className="hero-p" style={{ fontSize: "clamp(14px,1.5vw,16px)", color: "rgba(255,255,255,0.7)", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
+              {info?.tagline} — student at <strong style={{ background: "linear-gradient(135deg, #FFB800, #FF8C00)", backgroundSize: "200% 200%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>COMSATS University</strong>, building with React, Node.js &amp; Android.
             </p>
 
             <div className="hero-btns" style={{ display: "flex", gap: 12, marginBottom: 48, flexWrap: "wrap" }}>
-              <a href="#app-projects" className="btn-primary">View My Work →</a>
-              <button onClick={generateCV} className="btn-secondary">Download CV ↓</button>
             </div>
 
             <div className="stats-row hero-stats" style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
@@ -96,17 +87,17 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
                 { n: 5, l: "Technologies" },
               ].map((s) => (
                 <div key={s.l}>
-                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 42, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{s.n}<span style={{ color: "#FF4D6D" }}>+</span></div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em", marginTop: 4, textTransform: "uppercase" }}>{s.l}</div>
+                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 42, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{s.n}<span style={{ color: "#FFB800" }}>+</span></div>
+                  <div style={{ fontSize: 11, color: "rgba(255, 184, 0, 0.6)", letterSpacing: "0.1em", marginTop: 4, textTransform: "uppercase" }}>{s.l}</div>
                 </div>
               ))}
             </div>
 
             <div className="hero-socials" style={{ display: "flex", gap: 10, marginTop: 36, flexWrap: "wrap" }}>
               {[
-                { label: "LinkedIn", href: info?.linkedin, bg: "rgba(10,102,194,0.1)", border: "rgba(10,102,194,0.3)", color: "#5aabff" },
-                { label: "GitHub", href: info?.github, bg: "rgba(255,255,255,0.04)", border: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" },
-                { label: "Email", href: `mailto:${info?.email}`, bg: "rgba(77,255,180,0.06)", border: "rgba(77,255,180,0.2)", color: "#4DFFB4" },
+                { label: "LinkedIn", href: info?.linkedin, bg: "rgba(255,184,0,0.1)", border: "rgba(255,184,0,0.3)", color: "#FFB800" },
+                { label: "GitHub", href: info?.github, bg: "rgba(255,184,0,0.1)", border: "rgba(255,184,0,0.3)", color: "#FFB800" },
+                { label: "Email", href: `mailto:${info?.email}`, bg: "rgba(255,184,0,0.1)", border: "rgba(255,184,0,0.3)", color: "#FFB800" },
               ].map((s) => (
                 <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{
                   padding: "8px 18px", borderRadius: 8, background: s.bg, border: `1px solid ${s.border}`,
@@ -122,7 +113,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
             <div style={{
               width: 280, height: 350, borderRadius: 24,
               border: "1px solid rgba(255,255,255,0.1)",
-              background: "linear-gradient(135deg,rgba(255,77,109,0.08),rgba(167,139,250,0.08))",
+              background: "rgba(14,165,233,0.05)",
               display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12,
               position: "relative", overflow: "hidden",
             }}>
@@ -141,7 +132,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-siz
                 <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>Software Developer</div>
                 <div style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: "center" }}>
                   {["Planning", "Development", "Deployment"].map((t) => (
-                    <span key={t} style={{ padding: "2px 8px", borderRadius: 10, background: "rgba(167,139,250,0.15)", fontSize: 10, color: "#A78BFA", fontWeight: 600 }}>{t}</span>
+                    <span key={t} style={{ padding: "2px 8px", borderRadius: 10, background: "rgba(14,165,233,0.15)", fontSize: 10, color: "#0ea5e9", fontWeight: 600 }}>{t}</span>
                   ))}
                 </div>
               </div>

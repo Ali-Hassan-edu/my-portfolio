@@ -16,9 +16,9 @@ export default function Contact({ info }) {
     <section id="contact" className="section" style={{ background: "rgba(255,255,255,0.01)" }}>
       <div className="container">
         <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FF4D6D", marginBottom: 10, textTransform: "uppercase" }}>GET IN TOUCH</div>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FFB800", marginBottom: 10, textTransform: "uppercase" }}>GET IN TOUCH</div>
           <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)", marginBottom: 14 }}>
-            Contact <span style={{ color: "#FF4D6D" }}>Me</span>
+            Contact <span style={{ color: "#FFB800" }}>Me</span>
           </h2>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", maxWidth: 460, margin: "0 auto" }}>Share your details and connect via WhatsApp or email.</p>
         </div>
@@ -43,9 +43,9 @@ export default function Contact({ info }) {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {[
-              { name: "LinkedIn", sub: "Connect professionally", href: info?.linkedin, color: "#5aabff" },
+              { name: "LinkedIn", sub: "Connect professionally", href: info?.linkedin, color: "#FFB800" },
               { name: "GitHub", sub: "See my open source work", href: info?.github, color: "rgba(255,255,255,0.75)" },
-              { name: info?.email, sub: "Direct email", href: `mailto:${info?.email}`, color: "#4DFFB4" },
+              { name: info?.email, sub: "Direct email", href: `mailto:${info?.email}`, color: "#FFB800" },
             ].map((s) => (
               <a key={s.name} href={s.href} target="_blank" rel="noreferrer" className="card"
                 style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", textDecoration: "none" }}>

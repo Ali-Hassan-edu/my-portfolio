@@ -9,11 +9,11 @@ const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || "ali2024";
 
 const EMPTY_WEB_PROJECT = {
   type: "web", title: "", description: "", technologies: "", live_link: "", github_link: "",
-  image_url: "", category: "", year: new Date().getFullYear().toString(), color: "#4DFFB4",
+  image_url: "", category: "", year: new Date().getFullYear().toString(), color: "#0ea5e9",
 };
 const EMPTY_APP_PROJECT = {
   type: "app", title: "", tagline: "", description: "", technologies: "", features: "",
-  github_link: "", screenshots: [], platform: "Android", year: new Date().getFullYear().toString(), color: "#A78BFA",
+  github_link: "", screenshots: [], platform: "Android", year: new Date().getFullYear().toString(), color: "#0ea5e9",
 };
 const EMPTY_BLOG = {
   title: "", description: "", content: "", category: "", tags: "", featured_image: "", published: false,
@@ -36,10 +36,10 @@ const ADMIN_CSS = `
   font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:rgba(255,255,255,0.5);
 }
 .admin-nav-btn:hover { background:rgba(255,255,255,0.04); }
-.admin-nav-btn.active { background:rgba(255,77,109,0.1); color:#fff; font-weight:600; }
+.admin-nav-btn.active { background:rgba(14,165,233,0.1); color:#fff; font-weight:600; }
 .admin-nav-btn .nav-icon { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
-.admin-nav-btn.active .nav-icon { color:#FF4D6D; }
-.admin-nav-btn .nav-dot { margin-left:auto; width:5px; height:5px; border-radius:50%; background:#FF4D6D; flex-shrink:0; }
+.admin-nav-btn.active .nav-icon { color:#0ea5e9; }
+.admin-nav-btn .nav-dot { margin-left:auto; width:5px; height:5px; border-radius:50%; background:#0ea5e9; flex-shrink:0; }
 .admin-sidebar-footer { padding:14px 10px 20px; border-top:1px solid rgba(255,255,255,0.06); }
 .admin-main { flex:1; min-width:0; display:flex; flex-direction:column; }
 .admin-topbar {
@@ -65,12 +65,12 @@ const ADMIN_CSS = `
 .admin-item-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:#fff; }
 .admin-item-sub { font-size:11px; color:rgba(255,255,255,0.35); margin-top:3px; }
 .admin-btn-edit {
-  padding:5px 14px; border-radius:8px; background:rgba(167,139,250,0.12);
-  border:none; color:#A78BFA; font-size:11px; cursor:pointer; font-weight:600;
+  padding:5px 14px; border-radius:8px; background:rgba(14,165,233,0.12);
+  border:none; color:#0ea5e9; font-size:11px; cursor:pointer; font-weight:600;
 }
 .admin-btn-delete {
-  padding:5px 14px; border-radius:8px; background:rgba(255,77,109,0.1);
-  border:none; color:#FF4D6D; font-size:11px; cursor:pointer; font-weight:600;
+  padding:5px 14px; border-radius:8px; background:rgba(14,165,233,0.1);
+  border:none; color:#0ea5e9; font-size:11px; cursor:pointer; font-weight:600;
 }
 .admin-btn-publish {
   padding:5px 14px; border-radius:8px; border:none; font-size:11px; cursor:pointer; font-weight:600;
@@ -80,8 +80,8 @@ const ADMIN_CSS = `
 .admin-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:start; }
 .admin-success-toast {
   position:fixed; top:80px; right:24px; z-index:200;
-  padding:12px 20px; border-radius:10px; background:rgba(77,255,180,0.15);
-  border:1px solid rgba(77,255,180,0.3); color:#4DFFB4; font-size:13px; font-weight:600;
+  padding:12px 20px; border-radius:10px; background:rgba(14,165,233,0.15);
+  border:1px solid rgba(14,165,233,0.3); color:#0ea5e9; font-size:13px; font-weight:600;
   display:flex; align-items:center; gap:8px;
 }
 
@@ -98,7 +98,7 @@ const ADMIN_CSS = `
     font-size:12px; font-weight:600; background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.5);
     white-space:nowrap;
   }
-  .admin-mobile-nav button.active { background:rgba(255,77,109,0.12); color:#FF4D6D; }
+  .admin-mobile-nav button.active { background:rgba(14,165,233,0.12); color:#0ea5e9; }
   .admin-topbar { display:none !important; }
   .admin-content { padding:24px 16px 60px; }
   .admin-form-grid { grid-template-columns:1fr; }
@@ -167,7 +167,7 @@ export default function AdminPage({ onBack }) {
         <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, paddingTop: 80 }}>
           <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 400 }}>
             <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", fontSize: 12, marginBottom: 28 }}>← Back to Portfolio</button>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg,#FF4D6D,#A78BFA)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24 }}>🔐</div>
+            <div style={{ width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg,#0ea5e9,#0ea5e9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24 }}>🔐</div>
             <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Admin Panel</h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 32 }}>Enter your admin password to continue</p>
             <input
@@ -176,7 +176,7 @@ export default function AdminPage({ onBack }) {
               onKeyDown={(e) => { if (e.key === "Enter") login(); }}
               style={{ marginBottom: 14 }}
             />
-            {authError && <p style={{ fontSize: 12, color: "#FF4D6D", marginBottom: 14 }}>{authError}</p>}
+            {authError && <p style={{ fontSize: 12, color: "#0ea5e9", marginBottom: 14 }}>{authError}</p>}
             <button className="btn-primary" style={{ width: "100%", padding: "13px 20px" }} onClick={login}>Login →</button>
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function AdminPage({ onBack }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{
                 width: 36, height: 36, borderRadius: 10,
-                background: "linear-gradient(135deg,#FF4D6D,#A78BFA)",
+                background: "linear-gradient(135deg,#0ea5e9,#0ea5e9)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 14, color: "#fff",
                 flexShrink: 0,
@@ -260,8 +260,8 @@ export default function AdminPage({ onBack }) {
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{
                 padding: "4px 12px", borderRadius: 20,
-                background: "rgba(77,255,180,0.08)", border: "1px solid rgba(77,255,180,0.15)",
-                fontSize: 11, color: "#4DFFB4", fontWeight: 600,
+                background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.15)",
+                fontSize: 11, color: "#0ea5e9", fontWeight: 600,
               }}>● Connected</div>
             </div>
           </div>
@@ -298,10 +298,10 @@ export default function AdminPage({ onBack }) {
 /* ── DASHBOARD ── */
 function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChange }) {
   const stats = [
-    { label: "Web Projects", value: webProjects.length, color: "#4DFFB4", tab: "web" },
-    { label: "App Projects", value: appProjects.length, color: "#A78BFA", tab: "app" },
-    { label: "Blog Posts", value: blogPosts.length, color: "#FF4D6D", tab: "blog" },
-    { label: "Published", value: blogPosts.filter((p) => p.published).length, color: "#38BDF8", tab: "blog" },
+    { label: "Web Projects", value: webProjects.length, color: "#0ea5e9", tab: "web" },
+    { label: "App Projects", value: appProjects.length, color: "#0ea5e9", tab: "app" },
+    { label: "Blog Posts", value: blogPosts.length, color: "#0ea5e9", tab: "blog" },
+    { label: "Published", value: blogPosts.filter((p) => p.published).length, color: "#0ea5e9", tab: "blog" },
   ];
 
   const recentItems = [
@@ -336,8 +336,8 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
           <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>{profile?.tagline}</div>
           <span style={{
             padding: "4px 12px", borderRadius: 8, fontSize: 11, fontWeight: 600,
-            background: profile?.available ? "rgba(77,255,180,0.1)" : "rgba(255,77,109,0.1)",
-            color: profile?.available ? "#4DFFB4" : "#FF4D6D",
+            background: profile?.available ? "rgba(14,165,233,0.1)" : "rgba(14,165,233,0.1)",
+            color: profile?.available ? "#0ea5e9" : "#0ea5e9",
           }}>
             {profile?.available ? "● Open to Work" : "○ Not Available"}
           </span>
@@ -348,10 +348,10 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
           <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 14 }}>Quick Actions</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[
-              { label: "Add Web Project", tab: "web", color: "#4DFFB4" },
-              { label: "Add App Project", tab: "app", color: "#A78BFA" },
-              { label: "Write Blog Post", tab: "blog", color: "#FF4D6D" },
-              { label: "Edit Profile", tab: "profile", color: "#38BDF8" },
+              { label: "Add Web Project", tab: "web", color: "#0ea5e9" },
+              { label: "Add App Project", tab: "app", color: "#0ea5e9" },
+              { label: "Write Blog Post", tab: "blog", color: "#0ea5e9" },
+              { label: "Edit Profile", tab: "profile", color: "#0ea5e9" },
             ].map((a) => (
               <button
                 key={a.label}
@@ -519,7 +519,7 @@ function WebProjectsTab({ projects, setProjects, showMsg }) {
             <div><label className="admin-label">Technologies (comma-separated)</label><input value={form.technologies || ""} onChange={(e) => setForm({ ...form, technologies: e.target.value })} placeholder="React, Node.js, PostgreSQL" /></div>
             <div className="admin-grid-2">
               <div><label className="admin-label">Year</label><input value={form.year || ""} onChange={(e) => setForm({ ...form, year: e.target.value })} placeholder="2025" /></div>
-              <div><label className="admin-label">Accent Color</label><input type="color" value={form.color || "#4DFFB4"} onChange={(e) => setForm({ ...form, color: e.target.value })} style={{ height: 42, padding: "4px 8px" }} /></div>
+              <div><label className="admin-label">Accent Color</label><input type="color" value={form.color || "#0ea5e9"} onChange={(e) => setForm({ ...form, color: e.target.value })} style={{ height: 42, padding: "4px 8px" }} /></div>
             </div>
             <div><label className="admin-label">Live Link</label><input value={form.live_link || ""} onChange={(e) => setForm({ ...form, live_link: e.target.value })} placeholder="https://…" /></div>
             <div><label className="admin-label">GitHub Link</label><input value={form.github_link || ""} onChange={(e) => setForm({ ...form, github_link: e.target.value })} placeholder="https://github.com/…" /></div>
@@ -627,7 +627,7 @@ function AppProjectsTab({ projects, setProjects, showMsg }) {
                 </select>
               </div>
               <div><label className="admin-label">Year</label><input value={form.year || ""} onChange={(e) => setForm({ ...form, year: e.target.value })} placeholder="2025" /></div>
-              <div><label className="admin-label">Color</label><input type="color" value={form.color || "#A78BFA"} onChange={(e) => setForm({ ...form, color: e.target.value })} style={{ height: 42, padding: "4px 8px" }} /></div>
+              <div><label className="admin-label">Color</label><input type="color" value={form.color || "#0ea5e9"} onChange={(e) => setForm({ ...form, color: e.target.value })} style={{ height: 42, padding: "4px 8px" }} /></div>
             </div>
             <div><label className="admin-label">GitHub Link</label><input value={form.github_link || ""} onChange={(e) => setForm({ ...form, github_link: e.target.value })} placeholder="https://github.com/…" /></div>
             <div>
@@ -652,7 +652,7 @@ function AppProjectsTab({ projects, setProjects, showMsg }) {
                       <img src={s} alt="" style={{ width: 52, height: 78, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)" }} />
                       <button
                         onClick={() => removeScreenshot(i)}
-                        style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#FF4D6D", border: "none", color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                        style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#0ea5e9", border: "none", color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
                       >×</button>
                     </div>
                   ))}
@@ -675,7 +675,7 @@ function AppProjectsTab({ projects, setProjects, showMsg }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="admin-item-title">{p.title}</div>
                   <div className="admin-item-sub">{p.platform} · {p.year} · {(p.screenshots || []).length} screenshots</div>
-                  {p.tagline && <div style={{ fontSize: 11, color: p.color || "#A78BFA", marginTop: 3 }}>{p.tagline}</div>}
+                  {p.tagline && <div style={{ fontSize: 11, color: p.color || "#0ea5e9", marginTop: 3 }}>{p.tagline}</div>}
                 </div>
                 <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                   <button onClick={() => startEdit(p)} className="admin-btn-edit">Edit</button>
@@ -779,7 +779,7 @@ function BlogTab({ posts, setPosts, showMsg }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="admin-item-title">{p.title}</div>
                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
-                      <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 10, fontWeight: 600, background: p.published ? "rgba(77,255,180,0.1)" : "rgba(255,255,255,0.06)", color: p.published ? "#4DFFB4" : "rgba(255,255,255,0.3)" }}>
+                      <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 10, fontWeight: 600, background: p.published ? "rgba(14,165,233,0.1)" : "rgba(255,255,255,0.06)", color: p.published ? "#0ea5e9" : "rgba(255,255,255,0.3)" }}>
                         {p.published ? "● Published" : "○ Draft"}
                       </span>
                       <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{estimateReadingTime(p.content || p.description)}</span>
@@ -787,7 +787,7 @@ function BlogTab({ posts, setPosts, showMsg }) {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 5, flexShrink: 0, flexWrap: "wrap" }}>
-                    <button onClick={() => togglePublish(p)} className="admin-btn-publish" style={{ background: p.published ? "rgba(255,77,109,0.1)" : "rgba(77,255,180,0.1)", color: p.published ? "#FF4D6D" : "#4DFFB4" }}>
+                    <button onClick={() => togglePublish(p)} className="admin-btn-publish" style={{ background: p.published ? "rgba(14,165,233,0.1)" : "rgba(14,165,233,0.1)", color: p.published ? "#0ea5e9" : "#0ea5e9" }}>
                       {p.published ? "Unpublish" : "Publish"}
                     </button>
                     <button onClick={() => startEdit(p)} className="admin-btn-edit">Edit</button>
@@ -832,8 +832,8 @@ function SettingsTab({ showMsg }) {
           <button onClick={changePassword} className="btn-primary">Update Password</button>
         </div>
 
-        <div style={{ padding: "22px 26px", borderRadius: 14, background: "rgba(77,255,180,0.05)", border: "1px solid rgba(77,255,180,0.12)" }}>
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "#4DFFB4", marginBottom: 10 }}>✓ Supabase Connected</div>
+        <div style={{ padding: "22px 26px", borderRadius: 14, background: "rgba(14,165,233,0.05)", border: "1px solid rgba(14,165,233,0.12)" }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "#0ea5e9", marginBottom: 10 }}>✓ Supabase Connected</div>
           <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>
             Your portfolio data is backed by Supabase. Changes in the admin panel are saved in real-time to the database.
           </div>
@@ -844,7 +844,7 @@ function SettingsTab({ showMsg }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {["profiles", "web_projects", "app_projects", "blog_posts", "skills"].map(t => (
               <div key={t} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4DFFB4", flexShrink: 0 }} />
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0ea5e9", flexShrink: 0 }} />
                 {t}
               </div>
             ))}
@@ -889,7 +889,7 @@ function ImageUploadField({ label, value, onChange }) {
         {value ? (
            <div style={{position:"relative", width:100, height:100}}>
              <img src={value} style={{width:"100%", height:"100%", objectFit:"cover", borderRadius:8}} />
-             <button onClick={() => onChange("")} style={{position:"absolute", top:-5, right:-5, background:"#FF4D6D", color:"white", border:"none", borderRadius:"50%", width:24, height:24, cursor:"pointer"}}>×</button>
+             <button onClick={() => onChange("")} style={{position:"absolute", top:-5, right:-5, background:"#0ea5e9", color:"white", border:"none", borderRadius:"50%", width:24, height:24, cursor:"pointer"}}>×</button>
            </div>
         ) : (
           <div style={{ display: "flex", gap: 8 }}>

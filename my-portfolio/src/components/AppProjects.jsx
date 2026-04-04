@@ -66,7 +66,7 @@ export default function AppProjects({ projects }) {
 function SectionHeader() {
   return (
     <div style={{ textAlign: "center", marginBottom: 52 }}>
-      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#A78BFA", marginBottom: 10, textTransform: "uppercase" }}>MOBILE APPS</div>
+      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FFB800", marginBottom: 10, textTransform: "uppercase" }}>MOBILE APPS</div>
       <h2 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)", marginBottom: 14 }}>
         App{" "}
         <span className="grad-text">
@@ -84,7 +84,7 @@ function AppCard({ project: p, onViewGallery }) {
   const techList = parseCSV(p.technologies);
   const featureList = parseCSV(p.features);
   const screenshots = Array.isArray(p.screenshots) ? p.screenshots.filter(Boolean) : [];
-  const accentColor = p.color || "#A78BFA";
+  const accentColor = p.color || "#0ea5e9";
 
   return (
     <div className="card" style={{
@@ -161,7 +161,7 @@ function AppCard({ project: p, onViewGallery }) {
           padding: "20px 20px 20px 0",
           overflowX: "auto",
           alignItems: "center",
-          background: `linear-gradient(135deg,${accentColor}08,rgba(255,255,255,0.01))`,
+          background: "rgba(255,184,0,0.02)",
         }}>
           {screenshots.map((src, i) => (
             <div
@@ -193,7 +193,7 @@ function AppCard({ project: p, onViewGallery }) {
 
 function ScreenshotModal({ project: p, idx, setIdx, onClose }) {
   const screenshots = Array.isArray(p.screenshots) ? p.screenshots.filter(Boolean) : [];
-  const accentColor = p.color || "#A78BFA";
+  const accentColor = p.color || "#0ea5e9";
   const total = screenshots.length;
 
   return (
