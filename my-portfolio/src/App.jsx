@@ -325,7 +325,7 @@ textarea { resize: none; }
   .nav-links .nav-link { font-size: 18px; padding: 16px 0; border-bottom: 1px solid var(--border2); }
   .hamburger { display: flex; }
   .nav-name { display: none !important; }
-  .hero-photo { display: none !important; }
+  .hero-photo { justify-content: center !important; margin-top: 30px; }
   :root { --section-pad: 50px; }
   .container { padding: 0 20px; }
   .display { font-size: clamp(60px, 16vw, 90px); }
