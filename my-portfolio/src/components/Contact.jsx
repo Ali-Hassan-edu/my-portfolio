@@ -1,68 +1,73 @@
 import { useState } from "react";
 
 export default function Contact({ info }) {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const WHATSAPP_NUMBER = "923270196155";
+  const [form, setForm] = useState({ name:"", email:"", message:"" });
+  const WHATSAPP = "923270196155";
 
-  const openWhatsApp = () => {
-    const name = form.name || "Website visitor";
-    const email = form.email || "no-email";
-    const message = form.message || "I want to discuss a project/opportunity.";
-    const msg = encodeURIComponent(`Hi Ali! I'm ${name} (${email}). ${message}`);
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+  const openWA = () => {
+    const msg = encodeURIComponent(`Hi Ali! I'm ${form.name||"a visitor"} (${form.email||"no email"}). ${form.message||"I want to discuss a project."}`);
+    window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, "_blank");
   };
 
   return (
-    <section id="contact" className="section" style={{ background: "rgba(255,255,255,0.01)" }}>
+    <section id="contact" className="section" style={{ borderTop:"1px solid var(--border)", background:"var(--cream2)" }}>
       <div className="container">
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#FFB800", marginBottom: 10, textTransform: "uppercase" }}>GET IN TOUCH</div>
-          <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)", marginBottom: 14 }}>
-            Contact <span style={{ color: "#FFB800" }}>Me</span>
-          </h2>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", maxWidth: 460, margin: "0 auto" }}>Share your details and connect via WhatsApp or email.</p>
+        <div style={{ display:"flex", alignItems:"center", gap:20, marginBottom:64 }}>
+          <span style={{ fontFamily:"var(--font-display)", fontSize:80, color:"rgba(13,13,13,0.06)", lineHeight:1 }}>06</span>
+          <div>
+            <div className="label rv">Get In Touch</div>
+            <h2 className="display-sm rv rv-d1">Let's <span className="red">Talk.</span></h2>
+          </div>
         </div>
-        <div className="contact-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <input
-              type="text" placeholder="Your full name" value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            <input
-              type="email" placeholder="your@email.com" value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-            <textarea
-              rows={5} placeholder="Tell me about your project or opportunity..." value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-            />
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <button onClick={openWhatsApp} className="btn-primary">💬 WhatsApp Me</button>
-              <a href={`mailto:${info?.email}`} className="btn-secondary">✉️ Email Me</a>
+
+        <div className="contact-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:80 }}>
+          {/* Left — copy */}
+          <div className="rv-l">
+            <p style={{ fontFamily:"var(--font-serif)", fontStyle:"italic", fontSize:22, color:"var(--ink2)", lineHeight:1.7, marginBottom:40 }}>
+              "Have a project in mind, want to hire me, or just want to say hi? My inbox is always open."
+            </p>
+
+            <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
+              {[
+                { label:"LinkedIn",         val:"Connect professionally",  href: info?.linkedin,           icon:"↗" },
+                { label:"GitHub",           val:"See my open source code", href: info?.github,             icon:"↗" },
+                { label: info?.email,       val:"Direct email",            href:`mailto:${info?.email}`,   icon:"✉" },
+                { label:"WhatsApp",         val:"Quick replies guaranteed",href:`https://wa.me/${WHATSAPP}`,icon:"💬" },
+              ].map((s, i) => (
+                <a key={i} href={s.href} target="_blank" rel="noreferrer"
+                  style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+                    padding:"18px 0", borderBottom:"1px solid var(--border)",
+                    textDecoration:"none", transition:"all 0.2s", group:"true" }}
+                  onMouseEnter={e => { e.currentTarget.style.paddingLeft = "10px"; e.currentTarget.style.color = "var(--red)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0px"; e.currentTarget.style.color = "var(--ink)"; }}
+                >
+                  <div>
+                    <div style={{ fontSize:14, fontWeight:600, color:"inherit" }}>{s.label}</div>
+                    <div style={{ fontSize:11, color:"var(--muted)", marginTop:2 }}>{s.val}</div>
+                  </div>
+                  <span style={{ fontSize:18, color:"var(--muted)" }}>{s.icon}</span>
+                </a>
+              ))}
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {[
-              { name: "LinkedIn", sub: "Connect professionally", href: info?.linkedin, color: "#FFB800" },
-              { name: "GitHub", sub: "See my open source work", href: info?.github, color: "rgba(255,255,255,0.75)" },
-              { name: info?.email, sub: "Direct email", href: `mailto:${info?.email}`, color: "#FFB800" },
-            ].map((s) => (
-              <a key={s.name} href={s.href} target="_blank" rel="noreferrer" className="card"
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", textDecoration: "none" }}>
-                <div>
-                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: s.color }}>{s.name}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{s.sub}</div>
+
+          {/* Right — form */}
+          <div className="rv-r">
+            <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.18em", textTransform:"uppercase", color:"var(--muted)", marginBottom:32 }}>Send a Message</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:28 }}>
+              {[{key:"name",type:"text",ph:"Your full name"},{key:"email",type:"email",ph:"your@email.com"}].map(({key,type,ph}) => (
+                <div key={key}>
+                  <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"var(--muted)", marginBottom:6 }}>{key}</div>
+                  <input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm({...form,[key]:e.target.value})} />
                 </div>
-                <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 18 }}>↗</span>
-              </a>
-            ))}
-            <div style={{ padding: "18px 20px", borderRadius: 14, background: "rgba(37,211,102,0.06)", border: "1px solid rgba(37,211,102,0.15)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <span style={{ fontSize: 16 }}>💬</span>
-                <span style={{ fontSize: 12, color: "#25D366", fontWeight: 700 }}>WhatsApp Available</span>
+              ))}
+              <div>
+                <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"var(--muted)", marginBottom:6 }}>Message</div>
+                <textarea rows={5} placeholder="Tell me about your project..." value={form.message} onChange={e=>setForm({...form,message:e.target.value})} />
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }}>
-                Message Ali on WhatsApp for <strong style={{ color: "#fff" }}>quick replies</strong>, or use email for formal inquiries.
+              <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
+                <button onClick={openWA} className="btn-dark"><span>💬 WhatsApp</span></button>
+                <a href={`mailto:${info?.email}`} className="btn-outline">✉️ Email</a>
               </div>
             </div>
           </div>

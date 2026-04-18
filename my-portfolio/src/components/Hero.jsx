@@ -1,143 +1,122 @@
+import { useState, useEffect } from "react";
+
+const ROLES = ["Full Stack Dev.", "Android Dev.", "AI Enthusiast", "React Specialist"];
+
 export default function Hero({ info }) {
-  const esc = (str) => (str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const [roleIdx, setRoleIdx] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [typing, setTyping] = useState(true);
+
+  useEffect(() => {
+    const role = ROLES[roleIdx];
+    let t;
+    if (typing) {
+      if (displayed.length < role.length) t = setTimeout(() => setDisplayed(role.slice(0, displayed.length + 1)), 75);
+      else t = setTimeout(() => setTyping(false), 2200);
+    } else {
+      if (displayed.length > 0) t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 35);
+      else { setRoleIdx((i) => (i + 1) % ROLES.length); setTyping(true); }
+    }
+    return () => clearTimeout(t);
+  }, [displayed, typing, roleIdx]);
+
+  const esc = (s) => (s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
   const generateCV = () => {
-    const cvHTML = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>${esc(info?.name ?? "Ali Hassan")} — CV</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.6;}
-.page{max-width:780px;margin:0 auto;padding:42px 48px;}
-.header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0ea5e9;padding-bottom:22px;margin-bottom:22px;}
-.name{font-size:34px;font-weight:900;letter-spacing:-1px;color:#111;}
-.tagline{font-size:13px;color:#666;margin-top:4px;}
-.contact-info{text-align:right;font-size:12px;color:#444;line-height:1.8;}
-.contact-info a{color:#0ea5e9;text-decoration:none;}
-.section{margin-bottom:24px;}
-.section-title{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#0ea5e9;margin-bottom:10px;border-bottom:1px solid #e2e8f0;padding-bottom:6px;}
-.bio{font-size:13px;color:#444;line-height:1.8;}
-.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.skill-group-title{font-weight:700;font-size:12px;color:#333;margin-bottom:5px;}
-.skill-tags{display:flex;flex-wrap:wrap;gap:5px;}
-.skill-tag{font-size:11px;background:#f3f0ff;color:#6d4cbb;padding:3px 9px;border-radius:4px;font-weight:500;}
-@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.page{padding:28px 36px;}}
-</style>
-</head>
-<body>
-<div class="page">
-<div class="header">
-<div>
-<div class="name">${esc(info?.name ?? "Ali Hassan")}</div>
-<div class="tagline">${esc(info?.tagline ?? "")}</div>
-<div class="tagline" style="margin-top:2px;color:#888;">Software Engineering Student · ${esc(info?.university ?? "COMSATS University")}</div>
-</div>
-<div class="contact-info">
-<div><a href="mailto:${esc(info?.email)}">${esc(info?.email)}</a></div>
-<div><a href="${esc(info?.linkedin)}" target="_blank">LinkedIn Profile</a></div>
-<div><a href="${esc(info?.github)}" target="_blank">GitHub Profile</a></div>
-<div>${esc(info?.location ?? "Pakistan")}</div>
-</div>
-</div>
-<div class="section">
-<div class="section-title">Profile</div>
-<p class="bio">${esc(info?.bio ?? "")}</p>
-</div>
-<div class="section">
-<div class="section-title">Technical Skills</div>
-<div class="skills-grid">
-<div><div class="skill-group-title">Frontend & Web</div><div class="skill-tags"><span class="skill-tag">React</span><span class="skill-tag">JavaScript</span><span class="skill-tag">HTML/CSS</span></div></div>
-<div><div class="skill-group-title">Backend</div><div class="skill-tags"><span class="skill-tag">Node.js</span><span class="skill-tag">Express</span><span class="skill-tag">Supabase</span></div></div>
-<div style="margin-top:10px;"><div class="skill-group-title">Mobile</div><div class="skill-tags"><span class="skill-tag">Android</span><span class="skill-tag">Java</span><span class="skill-tag">Kotlin</span></div></div>
-<div style="margin-top:10px;"><div class="skill-group-title">AI & Data</div><div class="skill-tags"><span class="skill-tag">Python</span><span class="skill-tag">ML/AI</span><span class="skill-tag">TensorFlow</span></div></div>
-</div>
-</div>
-</div>
-<script>window.onload = () => window.print();</script>
-</body>
-</html>`;
     const w = window.open("", "_blank");
-    if (w) { w.document.write(cvHTML); w.document.close(); }
+    if (!w) return;
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${esc(info?.name)} — CV</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#111;font-size:13px;line-height:1.6;}.page{max-width:780px;margin:0 auto;padding:48px;}.header{border-bottom:3px solid #C8372D;padding-bottom:24px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;}.name{font-size:36px;font-weight:900;letter-spacing:-1px;}.tagline{font-size:13px;color:#555;margin-top:4px;}.contact-info{text-align:right;font-size:12px;color:#444;line-height:1.9;}.contact-info a{color:#C8372D;}.section{margin-bottom:26px;}.section-title{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#C8372D;border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:12px;}.bio{font-size:13px;color:#444;line-height:1.85;}.skill-tag{font-size:11px;background:#fff3f2;color:#C8372D;padding:3px 10px;border:1px solid #fccac7;display:inline-block;margin:2px;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body>
+<div class="page"><div class="header"><div><div class="name">${esc(info?.name ?? "Ali Hassan")}</div><div class="tagline">${esc(info?.tagline ?? "")}</div><div class="tagline" style="margin-top:3px;color:#888;">Software Engineering Student · ${esc(info?.university ?? "COMSATS University")}</div></div><div class="contact-info"><div><a href="mailto:${esc(info?.email)}">${esc(info?.email)}</a></div><div><a href="${esc(info?.linkedin)}">LinkedIn</a></div><div><a href="${esc(info?.github)}">GitHub</a></div><div>${esc(info?.location)}</div></div></div>
+<div class="section"><div class="section-title">Profile</div><p class="bio">${esc(info?.bio ?? "")}</p></div>
+<div class="section"><div class="section-title">Technical Skills</div><div style="display:flex;flex-wrap:wrap;gap:4px;"><span class="skill-tag">React</span><span class="skill-tag">Node.js</span><span class="skill-tag">JavaScript</span><span class="skill-tag">Android</span><span class="skill-tag">Java</span><span class="skill-tag">Python</span><span class="skill-tag">Supabase</span><span class="skill-tag">Git</span></div></div>
+</div><script>window.onload=()=>window.print();</script></body></html>`);
+    w.document.close();
   };
 
   return (
-    <section id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", paddingTop: 80 }}>
-      <div className="container" style={{ width: "100%" }}>
-        <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 56, alignItems: "center" }}>
-          {/* LEFT */}
-          <div className="hero-left">
-            <h1 className="hero-h1" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, lineHeight: 0.95, letterSpacing: "-2px", marginBottom: 24, fontSize: "clamp(44px,8vw,88px)" }}>
-              <div style={{ color: "#fff" }}>ALI</div>
-              <div style={{ background: "linear-gradient(135deg, #FFB800, #FF8C00, #D4AF37)", backgroundSize: "200% 200%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "gradientShift 6s ease infinite" }}>HASSAN</div>
+    <section id="hero" style={{ minHeight:"100vh", display:"flex", flexDirection:"column", justifyContent:"flex-end", paddingTop:64, position:"relative", overflow:"hidden" }}>
+
+      {/* Big number bg */}
+      <div style={{
+        position:"absolute", right:-40, top:"50%", transform:"translateY(-50%)",
+        fontFamily:"var(--font-display)", fontSize:"clamp(200px,25vw,360px)",
+        color:"rgba(13,13,13,0.04)", letterSpacing:"-0.05em", lineHeight:1,
+        userSelect:"none", pointerEvents:"none", zIndex:0,
+      }}>01</div>
+
+      <div className="container" style={{ position:"relative", zIndex:1, paddingBottom:80 }}>
+        {/* Main headline */}
+        <div className="hero-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:48, alignItems:"center" }}>
+          
+          {/* Left Block */}
+          <div style={{ paddingTop: 8 }}>
+            <div className="rv" style={{ padding: "8px 24px", background: "var(--cream2)", borderRadius: 30, fontSize: 13, fontWeight: 600, color: "var(--ink)", marginBottom: 24, display: "inline-flex", alignItems: "center", gap: 10 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--red)", animation: "blink 2s infinite" }} />
+              Open to Work
+            </div>
+
+            <h1 className="display rv" style={{ marginBottom:24, whiteSpace: "nowrap" }}>
+              ALI <span className="red">HASSAN</span>
             </h1>
 
-            <p className="hero-p" style={{ fontSize: "clamp(14px,1.5vw,16px)", color: "rgba(255,255,255,0.7)", lineHeight: 1.8, maxWidth: 480, marginBottom: 36 }}>
-              {info?.tagline} — student at <strong style={{ background: "linear-gradient(135deg, #FFB800, #FF8C00)", backgroundSize: "200% 200%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>COMSATS University</strong>, building with React, Node.js &amp; Android.
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:32 }} className="rv rv-d1">
+              <span style={{ fontFamily:"var(--font-body)", fontSize:18, fontWeight:400, color:"var(--ink3)", letterSpacing:"0.02em" }}>
+                {displayed}<span style={{ borderRight:"2px solid var(--red)", marginLeft:1, animation:"blink 0.5s step-end infinite" }}>&nbsp;</span>
+              </span>
+            </div>
+
+            <p style={{ fontSize:15, color:"var(--muted)", lineHeight:1.85, maxWidth:480, marginBottom:40 }} className="rv rv-d2">
+              {info?.bio ?? "Building modern digital experiences at COMSATS University, Vehari. React · Node.js · Android."}
             </p>
 
-            <div className="hero-btns" style={{ display: "flex", gap: 12, marginBottom: 48, flexWrap: "wrap" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:14, flexWrap:"wrap" }} className="rv rv-d3">
+              <a href="#contact" className="btn-dark"
+                onClick={e => { e.preventDefault(); document.getElementById("contact")?.scrollIntoView({ behavior:"smooth" }); }}>
+                <span>Let's Talk</span><span>→</span>
+              </a>
+              <a href="#projects" className="btn-outline"
+                onClick={e => { e.preventDefault(); document.getElementById("projects")?.scrollIntoView({ behavior:"smooth" }); }}>
+                View Work
+              </a>
             </div>
 
-            <div className="stats-row hero-stats" style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
+            {/* Socials row */}
+            <div style={{ display:"flex", gap:12, marginTop:40, flexWrap:"wrap" }} className="rv rv-d4">
               {[
-                { n: info?.years_exp ?? 2, l: "Years Exp." },
-                { n: info?.projects_count ?? 14, l: "Projects" },
-                { n: 5, l: "Technologies" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <div style={{ fontFamily: "Syne, sans-serif", fontSize: 42, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{s.n}<span style={{ color: "#FFB800" }}>+</span></div>
-                  <div style={{ fontSize: 11, color: "rgba(255, 184, 0, 0.6)", letterSpacing: "0.1em", marginTop: 4, textTransform: "uppercase" }}>{s.l}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="hero-socials" style={{ display: "flex", gap: 10, marginTop: 36, flexWrap: "wrap" }}>
-              {[
-                { label: "LinkedIn", href: info?.linkedin, bg: "rgba(255,184,0,0.1)", border: "rgba(255,184,0,0.3)", color: "#FFB800" },
-                { label: "GitHub", href: info?.github, bg: "rgba(255,184,0,0.1)", border: "rgba(255,184,0,0.3)", color: "#FFB800" },
-                { label: "Email", href: `mailto:${info?.email}`, bg: "rgba(255,184,0,0.1)", border: "rgba(255,184,0,0.3)", color: "#FFB800" },
-              ].map((s) => (
-                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" style={{
-                  padding: "8px 18px", borderRadius: 8, background: s.bg, border: `1px solid ${s.border}`,
-                  color: s.color, fontSize: 12, fontWeight: 600,
-                  textDecoration: "none",
-                }}>{s.label}</a>
+                { label:"LinkedIn", href: info?.linkedin },
+                { label:"GitHub",   href: info?.github },
+                { label:"Email",    href:`mailto:${info?.email}` },
+              ].map(s => (
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer"
+                  style={{ fontSize: 13, fontWeight: 600, color: "var(--muted)", textDecoration: "none", padding: "8px 20px", borderRadius: 20, background: "var(--cream2)", transition: "all 0.2s" }}
+                  onMouseEnter={e => {e.currentTarget.style.color = "var(--red)"}}
+                  onMouseLeave={e => {e.currentTarget.style.color = "var(--muted)"}}>
+                  {s.label}
+                </a>
               ))}
             </div>
           </div>
 
-          {/* PHOTO placeholder card */}
-          <div className="hero-photo" style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{
-              width: 280, height: 350, borderRadius: 24,
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(14,165,233,0.05)",
-              display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 12,
-              position: "relative", overflow: "hidden",
-            }}>
-              {info?.profile_pic ? (
-                 <img src={info.profile_pic} alt={info?.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                 <div style={{ fontFamily: "Syne, sans-serif", fontSize: 72, fontWeight: 800, color: "rgba(255,255,255,0.06)" }}>
-                   {info?.name ? info.name.split(' ').map(n => n[0]).join('') : "AH"}
-                 </div>
-              )}
-              <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0,
-                padding: "16px", background: "linear-gradient(to top, rgba(8,8,16,0.95), transparent)",
-              }}>
-                <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "#fff" }}>{info?.name ?? "Ali Hassan"}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>Software Developer</div>
-                <div style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap", justifyContent: "center" }}>
-                  {["Planning", "Development", "Deployment"].map((t) => (
-                    <span key={t} style={{ padding: "2px 8px", borderRadius: 10, background: "rgba(14,165,233,0.15)", fontSize: 10, color: "#0ea5e9", fontWeight: 600 }}>{t}</span>
-                  ))}
-                </div>
+          {/* Right Block — Profile Photo */}
+          <div className="hero-photo rv-r" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+            {info?.profile_pic && (
+              <img src={info.profile_pic} alt={info.name} style={{ width: "100%", maxWidth: 450, height: "auto", objectFit: "contain", borderRadius: 24, boxShadow: "0 24px 60px rgba(0,0,0,0.08)" }} />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom marquee strip */}
+      <div className="marquee-wrap">
+        <div className="marquee-track">
+          {[...Array(2)].map((_,ri) =>
+            ["React Developer","Android Apps","Node.js","Open To Work","AI & ML","Full Stack","Supabase","COMSATS University"].map((t,i) => (
+              <div key={`${ri}-${i}`} className="marquee-item">
+                {t}<span className="marquee-dot" />
               </div>
-            </div>
-          </div>
+            ))
+          )}
         </div>
       </div>
     </section>

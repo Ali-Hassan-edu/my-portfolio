@@ -7,13 +7,10 @@ import { uploadImage } from "../services/supabase";
 
 const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || "ali2024";
 
-const EMPTY_WEB_PROJECT = {
-  type: "web", title: "", description: "", technologies: "", live_link: "", github_link: "",
+const EMPTY_PROJECT = {
+  type: "app", title: "", description: "", technologies: "", live_link: "", github_link: "",
   image_url: "", category: "", year: new Date().getFullYear().toString(), color: "#0ea5e9",
-};
-const EMPTY_APP_PROJECT = {
-  type: "app", title: "", tagline: "", description: "", technologies: "", features: "",
-  github_link: "", screenshots: [], platform: "Android", year: new Date().getFullYear().toString(), color: "#0ea5e9",
+  tagline: "", features: "", screenshots: [], platform: "Android",
 };
 const EMPTY_BLOG = {
   title: "", description: "", content: "", category: "", tags: "", featured_image: "", published: false,
@@ -21,56 +18,56 @@ const EMPTY_BLOG = {
 
 /* ── ADMIN STYLES ── */
 const ADMIN_CSS = `
-.admin-wrap { min-height:100vh; padding-top:64px; display:flex; background:#080810; }
+.admin-wrap { min-height:100vh; padding-top:64px; display:flex; background:var(--cream); color:var(--ink); }
 .admin-sidebar {
-  width:240px; flex-shrink:0; background:rgba(255,255,255,0.02);
-  border-right:1px solid rgba(255,255,255,0.07); position:sticky;
+  width:240px; flex-shrink:0; background:var(--cream);
+  border-right:1px solid var(--border); position:sticky;
   top:64px; height:calc(100vh - 64px); display:flex; flex-direction:column; overflow-y:auto;
 }
-.admin-sidebar-brand { padding:24px 20px 18px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.admin-sidebar-brand { padding:24px 20px 18px; border-bottom:1px solid var(--border); }
 .admin-sidebar nav { padding:12px 10px; flex:1; }
-.admin-nav-label { font-size:9px; font-weight:700; letter-spacing:0.12em; color:rgba(255,255,255,0.2); text-transform:uppercase; padding:10px 12px 6px; }
+.admin-nav-label { font-size:9px; font-weight:700; letter-spacing:0.12em; color:var(--muted2); text-transform:uppercase; padding:10px 12px 6px; }
 .admin-nav-btn {
   width:100%; display:flex; align-items:center; gap:10px; padding:10px 14px;
   border-radius:10px; background:transparent; border:none; cursor:pointer; margin-bottom:2px;
-  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:rgba(255,255,255,0.5);
+  font-family:var(--font-body); font-size:13px; font-weight:500; color:var(--muted);
 }
-.admin-nav-btn:hover { background:rgba(255,255,255,0.04); }
-.admin-nav-btn.active { background:rgba(14,165,233,0.1); color:#fff; font-weight:600; }
+.admin-nav-btn:hover { background:var(--cream2); }
+.admin-nav-btn.active { background:var(--ink); color:var(--cream); font-weight:600; }
 .admin-nav-btn .nav-icon { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
-.admin-nav-btn.active .nav-icon { color:#0ea5e9; }
-.admin-nav-btn .nav-dot { margin-left:auto; width:5px; height:5px; border-radius:50%; background:#0ea5e9; flex-shrink:0; }
-.admin-sidebar-footer { padding:14px 10px 20px; border-top:1px solid rgba(255,255,255,0.06); }
+.admin-nav-btn.active .nav-icon { color:var(--red); }
+.admin-nav-btn .nav-dot { margin-left:auto; width:5px; height:5px; border-radius:50%; background:var(--red); flex-shrink:0; }
+.admin-sidebar-footer { padding:14px 10px 20px; border-top:1px solid var(--border); }
 .admin-main { flex:1; min-width:0; display:flex; flex-direction:column; }
 .admin-topbar {
-  border-bottom:1px solid rgba(255,255,255,0.07); background:rgba(8,8,16,0.95);
-  backdrop-filter:blur(20px); padding:0 32px; height:54px;
+  border-bottom:1px solid var(--border); background:var(--cream);
+  padding:0 32px; height:54px;
   display:flex; align-items:center; justify-content:space-between; position:sticky; top:64px; z-index:90;
 }
 .admin-content { padding:32px 32px 80px; flex:1; }
-.admin-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:14px; }
-.admin-card:hover { border-color:rgba(255,255,255,0.12); }
+.admin-card { background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.02); }
+.admin-card:hover { border-color:var(--ink); }
 .admin-stat-card { padding:22px 24px; cursor:pointer; text-align:left; }
-.admin-stat-card:hover { background:rgba(255,255,255,0.05); }
+.admin-stat-card:hover { background:var(--cream2); }
 .admin-form-card { padding:28px; border-radius:16px; }
-.admin-label { display:block; font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; font-weight:600; }
+.admin-label { display:block; font-size:11px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; font-weight:600; }
 .admin-section-head { margin-bottom:28px; }
-.admin-section-head h2 { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#fff; margin-bottom:4px; }
-.admin-section-head p { font-size:13px; color:rgba(255,255,255,0.4); }
+.admin-section-head h2 { font-family:var(--font-body); font-size:22px; font-weight:800; color:var(--ink); margin-bottom:4px; }
+.admin-section-head p { font-size:13px; color:var(--muted); }
 .admin-item {
-  padding:16px 18px; border-radius:12px; background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.07); display:flex; align-items:flex-start; gap:14px;
+  padding:16px 18px; border-radius:12px; background:#fff;
+  border:1px solid var(--border); display:flex; align-items:flex-start; gap:14px;
 }
-.admin-item:hover { background:rgba(255,255,255,0.05); }
-.admin-item-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:#fff; }
-.admin-item-sub { font-size:11px; color:rgba(255,255,255,0.35); margin-top:3px; }
+.admin-item:hover { background:var(--cream2); border-color:var(--ink); }
+.admin-item-title { font-family:var(--font-body); font-size:14px; font-weight:700; color:var(--ink); }
+.admin-item-sub { font-size:11px; color:var(--muted); margin-top:3px; }
 .admin-btn-edit {
-  padding:5px 14px; border-radius:8px; background:rgba(14,165,233,0.12);
-  border:none; color:#0ea5e9; font-size:11px; cursor:pointer; font-weight:600;
+  padding:5px 14px; border-radius:8px; background:var(--cream2);
+  border:1px solid var(--border); color:var(--ink); font-size:11px; cursor:pointer; font-weight:600;
 }
 .admin-btn-delete {
-  padding:5px 14px; border-radius:8px; background:rgba(14,165,233,0.1);
-  border:none; color:#0ea5e9; font-size:11px; cursor:pointer; font-weight:600;
+  padding:5px 14px; border-radius:8px; background:#FFEBEB;
+  border:1px solid #FFCDCD; color:var(--red); font-size:11px; cursor:pointer; font-weight:600;
 }
 .admin-btn-publish {
   padding:5px 14px; border-radius:8px; border:none; font-size:11px; cursor:pointer; font-weight:600;
@@ -80,9 +77,20 @@ const ADMIN_CSS = `
 .admin-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:start; }
 .admin-success-toast {
   position:fixed; top:80px; right:24px; z-index:200;
-  padding:12px 20px; border-radius:10px; background:rgba(14,165,233,0.15);
-  border:1px solid rgba(14,165,233,0.3); color:#0ea5e9; font-size:13px; font-weight:600;
+  padding:12px 20px; border-radius:10px; background:var(--ink);
+  border:1px solid var(--ink); color:var(--cream); font-size:13px; font-weight:600;
   display:flex; align-items:center; gap:8px;
+}
+.admin-wrap input, .admin-wrap textarea, .admin-wrap select {
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--border);
+  background: transparent;
+}
+.admin-wrap input:focus, .admin-wrap textarea:focus {
+  border-color: var(--red);
+}
+.admin-wrap input::placeholder, .admin-wrap textarea::placeholder {
+  color: var(--muted2);
 }
 
 /* mobile admin */
@@ -90,15 +98,15 @@ const ADMIN_CSS = `
   .admin-sidebar { display:none; }
   .admin-mobile-nav {
     display:flex !important; gap:4px; padding:12px 16px;
-    overflow-x:auto; border-bottom:1px solid rgba(255,255,255,0.07);
-    background:rgba(8,8,16,0.95); position:sticky; top:64px; z-index:91;
+    overflow-x:auto; border-bottom:1px solid var(--border);
+    background:var(--cream); position:sticky; top:64px; z-index:91;
   }
   .admin-mobile-nav button {
     flex-shrink:0; padding:8px 16px; border-radius:8px; border:none; cursor:pointer;
-    font-size:12px; font-weight:600; background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.5);
+    font-size:12px; font-weight:600; background:var(--cream2); color:var(--muted);
     white-space:nowrap;
   }
-  .admin-mobile-nav button.active { background:rgba(14,165,233,0.12); color:#0ea5e9; }
+  .admin-mobile-nav button.active { background:var(--ink); color:var(--cream); }
   .admin-topbar { display:none !important; }
   .admin-content { padding:24px 16px 60px; }
   .admin-form-grid { grid-template-columns:1fr; }
@@ -165,16 +173,16 @@ export default function AdminPage({ onBack }) {
       <>
         <style>{ADMIN_CSS}</style>
         <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, paddingTop: 80 }}>
-          <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 400 }}>
-            <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.4)", fontSize: 12, marginBottom: 28 }}>← Back to Portfolio</button>
+          <div style={{ background: "var(--border)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 400 }}>
+            <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 12, marginBottom: 28 }}>← Back to Portfolio</button>
             <div style={{ width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg,#0ea5e9,#0ea5e9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24 }}>🔐</div>
             <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Admin Panel</h2>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 32 }}>Enter your admin password to continue</p>
+            <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 32 }}>Enter your admin password to continue</p>
             <input
               type="password" placeholder="Password" value={pass}
               onChange={(e) => setPass(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") login(); }}
-              style={{ marginBottom: 14 }}
+              style={{ marginBottom: 14, color: "var(--ink)", borderBottom: "1px solid var(--muted)" }}
             />
             {authError && <p style={{ fontSize: 12, color: "#0ea5e9", marginBottom: 14 }}>{authError}</p>}
             <button className="btn-primary" style={{ width: "100%", padding: "13px 20px" }} onClick={login}>Login →</button>
@@ -187,8 +195,7 @@ export default function AdminPage({ onBack }) {
   const navItems = [
     { key: "dashboard", label: "Dashboard", icon: "◈" },
     { key: "profile", label: "Profile", icon: "◎" },
-    { key: "web", label: "Web Projects", icon: "⬡" },
-    { key: "app", label: "App Projects", icon: "◉" },
+    { key: "projects", label: "Projects", icon: "⬡" },
     { key: "blog", label: "Blog Posts", icon: "▦" },
     { key: "settings", label: "Settings", icon: "◆" },
   ];
@@ -207,12 +214,12 @@ export default function AdminPage({ onBack }) {
                 width: 36, height: 36, borderRadius: 10,
                 background: "linear-gradient(135deg,#0ea5e9,#0ea5e9)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 14, color: "#fff",
+                fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: 14, color: "var(--ink)",
                 flexShrink: 0,
               }}>AH</div>
               <div>
-                <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, color: "#fff" }}>Admin Panel</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 1 }}>Ali Hassan</div>
+                <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, color: "var(--ink)" }}>Admin Panel</div>
+                <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 1 }}>Ali Hassan</div>
               </div>
             </div>
           </div>
@@ -253,9 +260,9 @@ export default function AdminPage({ onBack }) {
         <div className="admin-main">
           <div className="admin-topbar">
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>Admin</span>
+              <span style={{ fontSize: 11, color: "var(--muted)" }}>Admin</span>
               <span style={{ fontSize: 11, color: "rgba(255,255,255,0.15)" }}>›</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{currentNav?.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{currentNav?.label}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{
@@ -268,15 +275,14 @@ export default function AdminPage({ onBack }) {
 
           <div className="admin-content">
             {loading ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", color: "rgba(255,255,255,0.3)", fontSize: 14, gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", color: "var(--muted)", fontSize: 14, gap: 10 }}>
                 Loading data…
               </div>
             ) : (
               <>
                 {tab === "dashboard" && <DashboardTab webProjects={webProjects} appProjects={appProjects} blogPosts={blogPosts} profile={profile} onTabChange={setTab} />}
                 {tab === "profile" && <ProfileTab profile={profile} setProfile={setProfile} showMsg={showMsg} />}
-                {tab === "web" && <WebProjectsTab projects={webProjects} setProjects={setWebProjects} showMsg={showMsg} />}
-                {tab === "app" && <AppProjectsTab projects={appProjects} setProjects={setAppProjects} showMsg={showMsg} />}
+                {tab === "projects" && <ProjectsTab webProjects={webProjects} appProjects={appProjects} setWebProjects={setWebProjects} setAppProjects={setAppProjects} showMsg={showMsg} />}
                 {tab === "blog" && <BlogTab posts={blogPosts} setPosts={setBlogPosts} showMsg={showMsg} />}
                 {tab === "settings" && <SettingsTab showMsg={showMsg} />}
               </>
@@ -323,7 +329,7 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
             className="admin-card admin-stat-card"
           >
             <div style={{ fontFamily: "Syne, sans-serif", fontSize: 40, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", marginTop: 8, fontWeight: 500 }}>{s.label}</div>
+            <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 8, fontWeight: 500 }}>{s.label}</div>
           </button>
         ))}
       </div>
@@ -331,9 +337,9 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
       <div className="admin-grid-2" style={{ marginBottom: 14 }}>
         {/* Profile card */}
         <div className="admin-card" style={{ padding: "24px 26px" }}>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 14 }}>Profile</div>
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{profile?.name}</div>
-          <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 14 }}>{profile?.tagline}</div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase", marginBottom: 14 }}>Profile</div>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 20, fontWeight: 700, color: "var(--ink)", marginBottom: 4 }}>{profile?.name}</div>
+          <div style={{ fontSize: 14, color: "var(--muted)", marginBottom: 14 }}>{profile?.tagline}</div>
           <span style={{
             padding: "4px 12px", borderRadius: 8, fontSize: 11, fontWeight: 600,
             background: profile?.available ? "rgba(14,165,233,0.1)" : "rgba(14,165,233,0.1)",
@@ -345,11 +351,10 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
 
         {/* Quick actions */}
         <div className="admin-card" style={{ padding: "24px 26px" }}>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 14 }}>Quick Actions</div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase", marginBottom: 14 }}>Quick Actions</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[
-              { label: "Add Web Project", tab: "web", color: "#0ea5e9" },
-              { label: "Add App Project", tab: "app", color: "#0ea5e9" },
+              { label: "Add Project", tab: "projects", color: "#0ea5e9" },
               { label: "Write Blog Post", tab: "blog", color: "#0ea5e9" },
               { label: "Edit Profile", tab: "profile", color: "#0ea5e9" },
             ].map((a) => (
@@ -358,7 +363,7 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
                 onClick={() => onTabChange(a.tab)}
                 style={{
                   textAlign: "left", padding: "10px 14px", borderRadius: 9,
-                  background: "transparent", border: "1px solid rgba(255,255,255,0.07)",
+                  background: "transparent", border: "1px solid var(--border)",
                   color: a.color, fontSize: 13, fontWeight: 600, cursor: "pointer",
                 }}
               >
@@ -372,7 +377,7 @@ function DashboardTab({ webProjects, appProjects, blogPosts, profile, onTabChang
       {/* Recent items */}
       {recentItems.length > 0 && (
         <div style={{ marginTop: 24 }}>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: 14 }}>Recent Content</div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase", marginBottom: 14 }}>Recent Content</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {recentItems.map((item, i) => (
               <div key={i} className="admin-item">
@@ -469,106 +474,20 @@ function ProfileTab({ profile, setProfile, showMsg }) {
   );
 }
 
-/* ── WEB PROJECTS ── */
-function WebProjectsTab({ projects, setProjects, showMsg }) {
-  const [form, setForm] = useState({ ...EMPTY_WEB_PROJECT });
-  const [editing, setEditing] = useState(null);
-  const [saving, setSaving] = useState(false);
-
-  async function save() {
-    if (!form.title) return alert("Title is required");
-    setSaving(true);
-    try {
-      if (editing) {
-        const updated = await updateProject(editing.id, form);
-        setProjects(projects.map((p) => (p.id === editing.id ? updated : p)));
-        setEditing(null);
-        showMsg("Project updated!");
-      } else {
-        const created = await addProject(form);
-        setProjects([...projects, created]);
-        showMsg("Project added!");
-      }
-      setForm({ ...EMPTY_WEB_PROJECT });
-    } catch (e) { alert("Error: " + e.message); }
-    finally { setSaving(false); }
-  }
-
-  async function remove(id) {
-    if (!confirm("Delete this project?")) return;
-    try { await deleteProject(id, "web"); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
-    catch (e) { alert("Error: " + e.message); }
-  }
-
-  function startEdit(p) { setEditing(p); setForm({ ...p }); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function cancelEdit() { setEditing(null); setForm({ ...EMPTY_WEB_PROJECT }); }
-
-  return (
-    <div>
-      <SectionHeading title="Web Projects" subtitle="Manage your web development projects" />
-      <div className="admin-form-grid">
-        {/* Form */}
-        <div className="admin-card admin-form-card">
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, marginBottom: 20, color: "#fff" }}>
-            {editing ? "✏️ Edit Project" : "➕ Add New Project"}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div><label className="admin-label">Title *</label><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Project Title" /></div>
-            <div><label className="admin-label">Category</label><input value={form.category || ""} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="e.g. E-commerce, Dashboard" /></div>
-            <div><label className="admin-label">Description</label><textarea rows={3} value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
-            <div><label className="admin-label">Technologies (comma-separated)</label><input value={form.technologies || ""} onChange={(e) => setForm({ ...form, technologies: e.target.value })} placeholder="React, Node.js, PostgreSQL" /></div>
-            <div className="admin-grid-2">
-              <div><label className="admin-label">Year</label><input value={form.year || ""} onChange={(e) => setForm({ ...form, year: e.target.value })} placeholder="2025" /></div>
-              <div><label className="admin-label">Accent Color</label><input type="color" value={form.color || "#0ea5e9"} onChange={(e) => setForm({ ...form, color: e.target.value })} style={{ height: 42, padding: "4px 8px" }} /></div>
-            </div>
-            <div><label className="admin-label">Live Link</label><input value={form.live_link || ""} onChange={(e) => setForm({ ...form, live_link: e.target.value })} placeholder="https://…" /></div>
-            <div><label className="admin-label">GitHub Link</label><input value={form.github_link || ""} onChange={(e) => setForm({ ...form, github_link: e.target.value })} placeholder="https://github.com/…" /></div>
-            <ImageUploadField label="Image URL" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} />
-          </div>
-          <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-            <button onClick={save} className="btn-primary" disabled={saving}>{saving ? "Saving…" : editing ? "Update Project" : "Add Project"}</button>
-            {editing && <button onClick={cancelEdit} className="btn-secondary">Cancel</button>}
-          </div>
-        </div>
-
-        {/* List */}
-        <div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14, fontWeight: 600 }}>{projects.length} project{projects.length !== 1 ? "s" : ""}</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 650, overflowY: "auto" }}>
-            {projects.map((p) => (
-              <div key={p.id} className="admin-item">
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="admin-item-title">{p.title}</div>
-                  <div className="admin-item-sub">{p.category} · {p.year}</div>
-                  {p.description && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.description}</div>}
-                </div>
-                <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                  <button onClick={() => startEdit(p)} className="admin-btn-edit">Edit</button>
-                  <button onClick={() => remove(p.id)} className="admin-btn-delete">Delete</button>
-                </div>
-              </div>
-            ))}
-            {projects.length === 0 && <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", textAlign: "center", padding: "40px 0" }}>No web projects yet</div>}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── APP PROJECTS ── */
-function AppProjectsTab({ projects, setProjects, showMsg }) {
-  const [form, setForm] = useState({ ...EMPTY_APP_PROJECT });
+/* ── PROJECTS ── */
+function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects, showMsg }) {
+  const [form, setForm] = useState({ ...EMPTY_PROJECT, type: "app" });
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [screenshotInput, setScreenshotInput] = useState("");
+
+  const allProjects = [...appProjects.map(p => ({...p, type: 'app'})), ...webProjects.map(p => ({...p, type: 'web'}))].sort((a, b) => parseInt(b.year || 0) - parseInt(a.year || 0));
 
   function addScreenshot() {
     if (!screenshotInput.trim()) return;
     setForm({ ...form, screenshots: [...(form.screenshots || []), screenshotInput.trim()] });
     setScreenshotInput("");
   }
-
   function removeScreenshot(i) {
     setForm({ ...form, screenshots: form.screenshots.filter((_, idx) => idx !== i) });
   }
@@ -579,111 +498,147 @@ function AppProjectsTab({ projects, setProjects, showMsg }) {
     try {
       if (editing) {
         const updated = await updateProject(editing.id, form);
-        setProjects(projects.map((p) => (p.id === editing.id ? updated : p)));
+        if (form.type === "app") {
+           setAppProjects(appProjects.map((p) => (p.id === editing.id ? updated : p)));
+        } else {
+           setWebProjects(webProjects.map((p) => (p.id === editing.id ? updated : p)));
+        }
         setEditing(null);
         showMsg("Project updated!");
       } else {
         const created = await addProject(form);
-        setProjects([...projects, created]);
+        if (form.type === "app") {
+           setAppProjects([...appProjects, created]);
+        } else {
+           setWebProjects([...webProjects, created]);
+        }
         showMsg("Project added!");
       }
-      setForm({ ...EMPTY_APP_PROJECT });
+      setForm({ ...EMPTY_PROJECT, type: "app" });
       setScreenshotInput("");
     } catch (e) { alert("Error: " + e.message); }
     finally { setSaving(false); }
   }
 
-  async function remove(id) {
+  async function remove(id, type) {
     if (!confirm("Delete this project?")) return;
-    try { await deleteProject(id, "app"); setProjects(projects.filter((p) => p.id !== id)); showMsg("Deleted!"); }
+    try { 
+       await deleteProject(id, type); 
+       if (type === "app") setAppProjects(appProjects.filter((p) => p.id !== id)); 
+       else setWebProjects(webProjects.filter((p) => p.id !== id)); 
+       showMsg("Deleted!"); 
+    }
     catch (e) { alert("Error: " + e.message); }
   }
 
-  function startEdit(p) { setEditing(p); setForm({ ...p, screenshots: p.screenshots || [] }); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function cancelEdit() { setEditing(null); setForm({ ...EMPTY_APP_PROJECT }); setScreenshotInput(""); }
+  function startEdit(p) { setEditing(p); setForm({ ...EMPTY_PROJECT, ...p, type: p.type || (p.platform ? "app" : "web") }); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function cancelEdit() { setEditing(null); setForm({ ...EMPTY_PROJECT, type: "app" }); setScreenshotInput(""); }
 
   return (
     <div>
-      <SectionHeading title="App Projects" subtitle="Manage your Android/iOS app projects" />
+      <SectionHeading title="My Projects" subtitle="Manage your web and app projects" />
       <div className="admin-form-grid">
         {/* Form */}
         <div className="admin-card admin-form-card">
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, marginBottom: 20, color: "#fff" }}>
-            {editing ? "✏️ Edit App Project" : "➕ Add New App Project"}
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, marginBottom: 20, color: "var(--ink)" }}>
+            {editing ? "✏️ Edit Project" : "➕ Add New Project"}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div><label className="admin-label">Title *</label><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="App Name" /></div>
-            <div><label className="admin-label">Tagline</label><input value={form.tagline || ""} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="Short description" /></div>
+            <div>
+              <label className="admin-label">Project Type</label>
+              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} disabled={!!editing} style={{ marginBottom: 10 }}>
+                <option value="app">Mobile App</option>
+                <option value="web">Web Project</option>
+              </select>
+            </div>
+            <div><label className="admin-label">Title *</label><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Project Name" /></div>
+            
+            {form.type === "app" && <div><label className="admin-label">Tagline</label><input value={form.tagline || ""} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="Short description" /></div>}
+            {form.type === "web" && <div><label className="admin-label">Category</label><input value={form.category || ""} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="e.g. E-commerce, Dashboard" /></div>}
+
             <div><label className="admin-label">Description</label><textarea rows={3} value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
-            <div><label className="admin-label">Technologies (comma-separated)</label><input value={form.technologies || ""} onChange={(e) => setForm({ ...form, technologies: e.target.value })} placeholder="Kotlin, Firebase, SQLite" /></div>
-            <div><label className="admin-label">Features (comma-separated)</label><input value={form.features || ""} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="Push Notifications, Auth, …" /></div>
+            <div><label className="admin-label">Technologies (comma-separated)</label><input value={form.technologies || ""} onChange={(e) => setForm({ ...form, technologies: e.target.value })} placeholder="React, Node.js" /></div>
+            
+            {form.type === "app" && <div><label className="admin-label">Features (comma-separated)</label><input value={form.features || ""} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="Push Notifications, Auth, …" /></div>}
+
             <div className="admin-grid-3">
-              <div>
-                <label className="admin-label">Platform</label>
-                <select value={form.platform || "Android"} onChange={(e) => setForm({ ...form, platform: e.target.value })}>
-                  <option>Android</option>
-                  <option>iOS</option>
-                  <option>Cross-platform</option>
-                </select>
-              </div>
+              {form.type === "app" && (
+                <div>
+                  <label className="admin-label">Platform</label>
+                  <select value={form.platform || "Android"} onChange={(e) => setForm({ ...form, platform: e.target.value })}>
+                    <option>Android</option>
+                    <option>iOS</option>
+                    <option>Cross-platform</option>
+                  </select>
+                </div>
+              )}
               <div><label className="admin-label">Year</label><input value={form.year || ""} onChange={(e) => setForm({ ...form, year: e.target.value })} placeholder="2025" /></div>
               <div><label className="admin-label">Color</label><input type="color" value={form.color || "#0ea5e9"} onChange={(e) => setForm({ ...form, color: e.target.value })} style={{ height: 42, padding: "4px 8px" }} /></div>
             </div>
+            
+            {form.type === "web" && <div><label className="admin-label">Live Link</label><input value={form.live_link || ""} onChange={(e) => setForm({ ...form, live_link: e.target.value })} placeholder="https://…" /></div>}
             <div><label className="admin-label">GitHub Link</label><input value={form.github_link || ""} onChange={(e) => setForm({ ...form, github_link: e.target.value })} placeholder="https://github.com/…" /></div>
-            <div>
-              <label className="admin-label">Screenshot URLs (gallery)</label>
-              <div style={{ display: "flex", gap: 8 }}>
-                <input value={screenshotInput} onChange={(e) => setScreenshotInput(e.target.value)} placeholder="https://…" onKeyDown={(e) => e.key === "Enter" && addScreenshot()} style={{ flex: 1 }} />
-                <label className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, cursor: "pointer", display:"flex", alignItems:"center", whiteSpace:"nowrap" }}>
-                  Upload File
-                  <input type="file" accept="image/*" onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if(!file) return;
-                    try { const url = await uploadImage(file); setForm(f => ({...f, screenshots: [...(f.screenshots||[]), url]})); }
-                    catch(err) { alert(err.message); }
-                  }} style={{ display: "none" }} />
-                </label>
-                <button onClick={addScreenshot} className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, whiteSpace: "nowrap" }}>Add URL</button>
-              </div>
-              {(form.screenshots || []).length > 0 && (
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
-                  {(form.screenshots || []).map((s, i) => (
-                    <div key={i} style={{ position: "relative" }}>
-                      <img src={s} alt="" style={{ width: 52, height: 78, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)" }} />
-                      <button
-                        onClick={() => removeScreenshot(i)}
-                        style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#0ea5e9", border: "none", color: "#fff", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
-                      >×</button>
-                    </div>
-                  ))}
+            
+            {form.type === "web" && <ImageUploadField label="Image URL" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} />}
+            
+            {form.type === "app" && (
+              <div>
+                <label className="admin-label">Screenshot URLs (gallery)</label>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input value={screenshotInput} onChange={(e) => setScreenshotInput(e.target.value)} placeholder="https://…" onKeyDown={(e) => e.key === "Enter" && addScreenshot()} style={{ flex: 1 }} />
+                  <label className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, cursor: "pointer", display:"flex", alignItems:"center", whiteSpace:"nowrap" }}>
+                    Upload File
+                    <input type="file" accept="image/*" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if(!file) return;
+                      try { const url = await uploadImage(file); setForm(f => ({...f, screenshots: [...(f.screenshots||[]), url]})); }
+                      catch(err) { alert(err.message); }
+                    }} style={{ display: "none" }} />
+                  </label>
+                  <button onClick={addScreenshot} className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, whiteSpace: "nowrap" }}>Add URL</button>
                 </div>
-              )}
-            </div>
+                {(form.screenshots || []).length > 0 && (
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+                    {(form.screenshots || []).map((s, i) => (
+                      <div key={i} style={{ position: "relative" }}>
+                        <img src={s} alt="" style={{ width: 52, height: 78, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)" }} />
+                        <button
+                          onClick={() => removeScreenshot(i)}
+                          style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#0ea5e9", border: "none", color: "var(--ink)", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                        >×</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-            <button onClick={save} className="btn-primary" disabled={saving}>{saving ? "Saving…" : editing ? "Update App" : "Add App"}</button>
+            <button onClick={save} className="btn-primary" disabled={saving}>{saving ? "Saving…" : editing ? "Update Project" : "Add Project"}</button>
             {editing && <button onClick={cancelEdit} className="btn-secondary">Cancel</button>}
           </div>
         </div>
 
         {/* List */}
         <div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14, fontWeight: 600 }}>{projects.length} app{projects.length !== 1 ? "s" : ""}</div>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 14, fontWeight: 600 }}>{allProjects.length} project{allProjects.length !== 1 ? "s" : ""}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 650, overflowY: "auto" }}>
-            {projects.map((p) => (
-              <div key={p.id} className="admin-item">
+            {allProjects.map((p) => (
+              <div key={`${p.type}-${p.id}`} className="admin-item">
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="admin-item-title">{p.title}</div>
-                  <div className="admin-item-sub">{p.platform} · {p.year} · {(p.screenshots || []).length} screenshots</div>
-                  {p.tagline && <div style={{ fontSize: 11, color: p.color || "#0ea5e9", marginTop: 3 }}>{p.tagline}</div>}
+                  <div className="admin-item-sub">
+                     {p.type === 'app' ? '📱 Mobile App' : '🌐 Web Project'} · {p.year}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.description || p.tagline}</div>
                 </div>
                 <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                   <button onClick={() => startEdit(p)} className="admin-btn-edit">Edit</button>
-                  <button onClick={() => remove(p.id)} className="admin-btn-delete">Delete</button>
+                  <button onClick={() => remove(p.id, p.type)} className="admin-btn-delete">Delete</button>
                 </div>
               </div>
             ))}
-            {projects.length === 0 && <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", textAlign: "center", padding: "40px 0" }}>No app projects yet</div>}
+            {allProjects.length === 0 && <div style={{ fontSize: 13, color: "var(--muted)", textAlign: "center", padding: "40px 0" }}>No projects yet</div>}
           </div>
         </div>
       </div>
@@ -744,10 +699,10 @@ function BlogTab({ posts, setPosts, showMsg }) {
         {/* Form */}
         <div className="admin-card admin-form-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, color: "#fff" }}>
+            <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, color: "var(--ink)" }}>
               {editing ? "✏️ Edit Post" : "📝 New Post"}
             </div>
-            {form.content && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>{readingTime}</div>}
+            {form.content && <div style={{ fontSize: 11, color: "var(--muted)" }}>{readingTime}</div>}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <div><label className="admin-label">Title *</label><input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Post title" /></div>
@@ -758,9 +713,9 @@ function BlogTab({ posts, setPosts, showMsg }) {
               <div><label className="admin-label">Tags (comma-separated)</label><input value={form.tags || ""} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="react, tips, android" /></div>
             </div>
             <ImageUploadField label="Featured Image URL" value={form.featured_image} onChange={(v) => setForm({ ...form, featured_image: v })} />
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 10, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 10, background: "var(--border)", border: "1px solid var(--border)" }}>
               <input type="checkbox" id="pub" checked={!!form.published} onChange={(e) => setForm({ ...form, published: e.target.checked })} style={{ width: "auto" }} />
-              <label htmlFor="pub" style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", cursor: "pointer" }}>Publish immediately</label>
+              <label htmlFor="pub" style={{ fontSize: 13, color: "var(--muted)", cursor: "pointer" }}>Publish immediately</label>
             </div>
           </div>
           <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
@@ -771,7 +726,7 @@ function BlogTab({ posts, setPosts, showMsg }) {
 
         {/* List */}
         <div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 14, fontWeight: 600 }}>{posts.length} post{posts.length !== 1 ? "s" : ""}</div>
+          <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 14, fontWeight: 600 }}>{posts.length} post{posts.length !== 1 ? "s" : ""}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 650, overflowY: "auto" }}>
             {posts.map((p) => (
               <div key={p.id} className="admin-item" style={{ flexDirection: "column", gap: 10 }}>
@@ -779,11 +734,11 @@ function BlogTab({ posts, setPosts, showMsg }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="admin-item-title">{p.title}</div>
                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
-                      <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 10, fontWeight: 600, background: p.published ? "rgba(14,165,233,0.1)" : "rgba(255,255,255,0.06)", color: p.published ? "#0ea5e9" : "rgba(255,255,255,0.3)" }}>
+                      <span style={{ padding: "3px 10px", borderRadius: 6, fontSize: 10, fontWeight: 600, background: p.published ? "rgba(14,165,233,0.1)" : "var(--border)", color: p.published ? "#0ea5e9" : "var(--muted)" }}>
                         {p.published ? "● Published" : "○ Draft"}
                       </span>
-                      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{estimateReadingTime(p.content || p.description)}</span>
-                      {p.category && <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>{p.category}</span>}
+                      <span style={{ fontSize: 10, color: "var(--muted)" }}>{estimateReadingTime(p.content || p.description)}</span>
+                      {p.category && <span style={{ fontSize: 10, color: "var(--muted)" }}>{p.category}</span>}
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 5, flexShrink: 0, flexWrap: "wrap" }}>
@@ -796,7 +751,7 @@ function BlogTab({ posts, setPosts, showMsg }) {
                 </div>
               </div>
             ))}
-            {posts.length === 0 && <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", textAlign: "center", padding: "40px 0" }}>No blog posts yet</div>}
+            {posts.length === 0 && <div style={{ fontSize: 13, color: "var(--muted)", textAlign: "center", padding: "40px 0" }}>No blog posts yet</div>}
           </div>
         </div>
       </div>
@@ -823,7 +778,7 @@ function SettingsTab({ showMsg }) {
       <SectionHeading title="Settings" subtitle="Manage your admin configuration" />
       <div style={{ maxWidth: 480 }}>
         <div className="admin-card admin-form-card" style={{ marginBottom: 24 }}>
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 18 }}>🔑 Change Password</div>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, color: "var(--ink)", marginBottom: 18 }}>🔑 Change Password</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 18 }}>
             <div><label className="admin-label">Current Password</label><input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} /></div>
             <div><label className="admin-label">New Password</label><input type="password" value={newPass} onChange={(e) => setNewPass(e.target.value)} /></div>
@@ -834,16 +789,16 @@ function SettingsTab({ showMsg }) {
 
         <div style={{ padding: "22px 26px", borderRadius: 14, background: "rgba(14,165,233,0.05)", border: "1px solid rgba(14,165,233,0.12)" }}>
           <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "#0ea5e9", marginBottom: 10 }}>✓ Supabase Connected</div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>
+          <div style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.7 }}>
             Your portfolio data is backed by Supabase. Changes in the admin panel are saved in real-time to the database.
           </div>
         </div>
 
-        <div style={{ marginTop: 24, padding: "22px 26px", borderRadius: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 10 }}>Database Tables</div>
+        <div style={{ marginTop: 24, padding: "22px 26px", borderRadius: 14, background: "var(--border)", border: "1px solid var(--border)" }}>
+          <div style={{ fontFamily: "Syne, sans-serif", fontSize: 14, fontWeight: 700, color: "var(--ink)", marginBottom: 10 }}>Database Tables</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {["profiles", "web_projects", "app_projects", "blog_posts", "skills"].map(t => (
-              <div key={t} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
+              <div key={t} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--muted)" }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0ea5e9", flexShrink: 0 }} />
                 {t}
               </div>
@@ -893,7 +848,7 @@ function ImageUploadField({ label, value, onChange }) {
            </div>
         ) : (
           <div style={{ display: "flex", gap: 8 }}>
-            <input value={value || ""} onChange={(e) => onChange(e.target.value)} placeholder="https://..." style={{ flex: 1, padding: "8px 12px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)", borderRadius: 8, color: "#fff" }} />
+            <input value={value || ""} onChange={(e) => onChange(e.target.value)} placeholder="https://..." style={{ flex: 1, padding: "8px 12px", border: "1px solid rgba(255,255,255,0.1)", background: "var(--border)", borderRadius: 8, color: "var(--ink)" }} />
             <label className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, cursor: "pointer", display:"flex", alignItems:"center", whiteSpace:"nowrap" }}>
               {uploading ? "Uploading..." : "Upload File"}
               <input type="file" accept="image/*" onChange={handleFile} style={{ display: "none" }} disabled={uploading}/>

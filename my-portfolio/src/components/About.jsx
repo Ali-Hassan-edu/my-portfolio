@@ -1,45 +1,67 @@
 export default function About({ info }) {
   return (
-    <section id="about" className="section">
+    <section id="about" className="section" style={{ borderTop:"1px solid var(--border)" }}>
       <div className="container">
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", color: "#0ea5e9", marginBottom: 10, textTransform: "uppercase" }}>WHO I AM</div>
-          <h2 className="section-title" style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, letterSpacing: "-1.5px", fontSize: "clamp(32px,5vw,52px)" }}>
-            About <span style={{ color: "#0ea5e9" }}>Me</span>
-          </h2>
+
+        {/* Section label */}
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", marginBottom:64 }}>
+          <div className="label rv" style={{ marginBottom: 12, justifyContent: "center" }}>Who I Am</div>
+          <h2 className="display-sm rv rv-d1" style={{ marginBottom: 24 }}>About <span className="red">Me.</span></h2>
+          <div className="rv rv-d2" style={{ width: 1, height: 40, background: "var(--border)" }} />
         </div>
-        <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}>
+
+        <div className="about-grid" style={{ display:"grid", gridTemplateColumns:"1.1fr 0.9fr", gap:80, alignItems:"start" }}>
+          {/* Left */}
           <div>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.85, marginBottom: 18 }}>{info?.bio}</p>
-            <div className="about-info-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 28 }}>
+            <p style={{ fontSize:20, fontFamily:"var(--font-serif)", fontStyle:"italic", color:"var(--ink2)", lineHeight:1.75, marginBottom:40 }} className="rv">
+              "{info?.bio}"
+            </p>
+            <hr className="hr" style={{ marginBottom:36 }} />
+            <div className="about-info-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0 }}>
               {[
-                { l: "University", v: info?.university },
-                { l: "Location", v: info?.location },
-                { l: "Email", v: info?.email },
-                { l: "Experience", v: `${info?.years_exp ?? 2}+ Years` },
-              ].map((item) => (
-                <div key={item.l} style={{ padding: "14px 16px", borderRadius: 12, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                  <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>{item.l}</div>
-                  <div style={{ fontSize: 13, color: "#fff", fontWeight: 500, wordBreak: "break-word" }}>{item.v}</div>
+                { l:"University", v: info?.university, i:"🎓" },
+                { l:"Location",   v: info?.location,   i:"📍" },
+                { l:"Email",      v: info?.email,      i:"✉️" },
+                { l:"Experience", v:`${info?.years_exp ?? 2}+ Years`, i:"⚡" },
+              ].map((item, idx) => (
+                <div key={item.l} className="rv" style={{
+                  padding:"20px 0",
+                  borderBottom:"1px solid var(--border)",
+                  borderRight: idx % 2 === 0 ? "1px solid var(--border)" : "none",
+                  paddingRight: idx % 2 === 0 ? 24 : 0,
+                  paddingLeft: idx % 2 === 1 ? 24 : 0,
+                  animationDelay: `${idx * 0.1}s`,
+                }}>
+                  <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.15em", textTransform:"uppercase", color:"var(--muted)", marginBottom:6 }}>{item.l}</div>
+                  <div style={{ fontSize:14, color:"var(--ink)", fontWeight:500, wordBreak:"break-word" }}>{item.v}</div>
                 </div>
               ))}
             </div>
+            <div style={{ marginTop:36 }} className="rv rv-d2">
+              <a href={info?.github} target="_blank" rel="noreferrer" className="btn-dark">
+                <span>View GitHub</span><span>↗</span>
+              </a>
+            </div>
           </div>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", color: "rgba(255,255,255,0.3)", marginBottom: 20, textTransform: "uppercase" }}>Experience</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+          {/* Right — Timeline */}
+          <div className="rv-r">
+            <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.15em", textTransform:"uppercase", color:"var(--muted)", marginBottom:28 }}>Experience</div>
+            <div style={{ position:"relative" }}>
+              {/* Vertical line */}
+              <div style={{ position:"absolute", left:0, top:0, bottom:0, width:1, background:"var(--border)" }} />
+
               {[
-                { period: "2023 — Present", role: "B.S. Software Engineering", company: "COMSATS University, Vehari", desc: "Studying software engineering with focus on full-stack development, mobile applications, and AI.", accent: "#0ea5e9" },
-                { period: "2024 — Present", role: "Full Stack Developer", company: "Freelance · Remote", desc: "Building full-stack web & Android apps for clients worldwide.", accent: "#0ea5e9" },
-                { period: "2023 — 2024", role: "AI & ML Developer", company: "Academic Projects", desc: "Developed AI/ML projects as part of coursework and personal interest.", accent: "#0ea5e9" },
+                { period:"2023 — Present", role:"B.S. Software Engineering", company:"COMSATS Univ., Vehari", desc:"Full-stack dev, mobile applications & AI/ML coursework.", accent:"var(--red)" },
+                { period:"2024 — Present", role:"Full Stack Developer",      company:"Freelance · Remote",    desc:"Building web & Android apps for international clients.", accent:"var(--ink3)" },
+                { period:"2023 — 2024",    role:"AI & ML Developer",         company:"Academic Projects",     desc:"TensorFlow, scikit-learn, Pandas — coursework & research.", accent:"var(--ink3)" },
               ].map((t, i) => (
-                <div key={i} style={{ padding: "16px 18px", borderRadius: 14, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", transition: "background 0.2s" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
-                    <div style={{ fontFamily: "Syne, sans-serif", fontSize: 13, fontWeight: 700, color: "#fff" }}>{t.role}</div>
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.25)", flexShrink: 0 }}>{t.period}</div>
-                  </div>
-                  <div style={{ fontSize: 11, color: t.accent, fontWeight: 600, letterSpacing: "0.04em", marginBottom: 4 }}>{t.company}</div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6 }}>{t.desc}</div>
+                <div key={i} style={{ paddingLeft:28, paddingBottom: i < 2 ? 36 : 0, position:"relative" }}>
+                  <div style={{ position:"absolute", left:-4, top:4, width:9, height:9, borderRadius:"50%", background: i===0 ? "var(--red)" : "var(--muted2)", border:"2px solid var(--cream)" }} />
+                  <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"var(--muted2)", marginBottom:6 }}>{t.period}</div>
+                  <div style={{ fontFamily:"var(--font-body)", fontSize:15, fontWeight:600, color:"var(--ink)", marginBottom:4 }}>{t.role}</div>
+                  <div style={{ fontSize:12, color: t.accent, fontWeight:600, letterSpacing:"0.04em", marginBottom:6 }}>{t.company}</div>
+                  <div style={{ fontSize:13, color:"var(--muted)", lineHeight:1.7 }}>{t.desc}</div>
                 </div>
               ))}
             </div>
