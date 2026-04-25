@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const ROLES = ["Full Stack Dev.", "Android Dev.", "AI Enthusiast", "React Specialist"];
+const ROLES = ["Planning Specialist", "Full Stack Dev.", "Flutter Expert", "Deployment Engineer"];
 
 export default function Hero({ info }) {
   const [roleIdx, setRoleIdx] = useState(0);
@@ -100,9 +100,18 @@ export default function Hero({ info }) {
 
           {/* Right Block — Profile Photo */}
           <div className="hero-photo rv-r" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-            {info?.profile_pic && (
-              <img src={info.profile_pic} alt={info.name} style={{ width: "100%", maxWidth: 450, height: "auto", objectFit: "contain", borderRadius: 24, boxShadow: "0 24px 60px rgba(0,0,0,0.08)" }} />
-            )}
+            <div style={{
+              width: "clamp(280px, 35vw, 420px)", 
+              height: "clamp(280px, 35vw, 420px)", 
+              borderRadius: "50%", overflow: "hidden",
+              border: "8px solid white", boxShadow: "0 24px 60px rgba(0,0,0,0.12)",
+              display: "flex", alignItems: "center", justifyContent: "center", background: "var(--cream2)"
+            }}>
+              <img src={info?.profile_pic || "/profile.png"} alt={info?.name || "Ali Hassan"} 
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} 
+                onError={(e) => { e.currentTarget.src = "/profile.png"; }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -111,7 +120,7 @@ export default function Hero({ info }) {
       <div className="marquee-wrap">
         <div className="marquee-track">
           {[...Array(2)].map((_,ri) =>
-            ["React Developer","Android Apps","Node.js","Open To Work","AI & ML","Full Stack","Supabase","COMSATS University"].map((t,i) => (
+            ["React Developer","Flutter Apps","Planning & Design","Deployment Techs","Node.js Backend","Open To Work"].map((t,i) => (
               <div key={`${ri}-${i}`} className="marquee-item">
                 {t}<span className="marquee-dot" />
               </div>

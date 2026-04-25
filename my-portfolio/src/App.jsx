@@ -3,6 +3,7 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import About from "./components/About";
+import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Contact from "./components/Contact";
@@ -14,13 +15,15 @@ import { getBlogPosts } from "./services/blogService";
 
 const DEFAULT_INFO = {
   name: "Ali Hassan",
-  tagline: "Building modern web & app experiences",
-  bio: "Software Engineering student at COMSATS University Islamabad, Vehari Campus. I build high-quality web and Android applications using React, Node.js, Java and modern AI tools.",
-  university: "COMSATS University, Vehari",
+  tagline: "Planning · Development · Deployment · Flutter",
+  bio: "Crafting excellence through precise Planning, agile Development, and seamless Deployment. I specialize in building high-performance web and mobile applications using React, Node.js, and Flutter.",
+  about_bio: "Software Engineering student at COMSATS University Islamabad (Vehari Campus) with hands-on experience in Android and full-stack development. I specialize in building production-ready mobile and web applications, delivering end-to-end solutions from intuitive user interfaces to scalable backend systems. Committed to clean, maintainable code and driven by a focus on real-world impact, I continuously refine my skills through professional and freelance projects.",
+  university: "COMSATS University Islamabad (Vehari Campus)",
   location: "Vehari, Pakistan",
   email: "raoali.edu@gmail.com",
   linkedin: "https://www.linkedin.com/in/ali-hassan-45b9b53b0",
   github: "https://github.com/Ali-Hassan-edu",
+  profile_pic: "/profile.png",
   available: true,
   years_exp: 2,
   projects_count: 14,
@@ -358,7 +361,7 @@ export default function App() {
 
   useEffect(() => {
     if (page !== "home") return;
-    const sections = ["hero","about","projects","skills","contact"];
+    const sections = ["hero","about","experience","projects","skills","contact"];
     const obs = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }); },
       { threshold: 0.2 }
@@ -413,6 +416,7 @@ export default function App() {
         <main>
           <Hero info={info} />
           <About info={info} />
+          <Experience />
           <Projects projects={projects} />
           <Skills />
           <Contact info={info} />

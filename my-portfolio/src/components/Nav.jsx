@@ -12,6 +12,7 @@ export default function Nav({ active, page, onPageChange }) {
 
   const links = [
     { label: "About", href: "#about", key: "about" },
+    { label: "Experience", href: "#experience", key: "experience" },
     { label: "Projects", href: "#projects", key: "projects" },
     { label: "Skills", href: "#skills", key: "skills" },
     { label: "Blog", key: "blog" },

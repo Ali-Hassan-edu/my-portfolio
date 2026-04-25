@@ -1,70 +1,57 @@
 export default function About({ info }) {
+  const universityFallback = "COMSATS University Islamabad (Vehari Campus)";
+  const expYears = info?.years_exp && info.years_exp > 0 ? info.years_exp : 2;
+
   return (
-    <section id="about" className="section" style={{ borderTop:"1px solid var(--border)" }}>
+    <section id="about" className="section" style={{ borderTop:"1px solid var(--border)", background: "var(--cream)" }}>
       <div className="container">
 
         {/* Section label */}
-        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", marginBottom:64 }}>
-          <div className="label rv" style={{ marginBottom: 12, justifyContent: "center" }}>Who I Am</div>
-          <h2 className="display-sm rv rv-d1" style={{ marginBottom: 24 }}>About <span className="red">Me.</span></h2>
-          <div className="rv rv-d2" style={{ width: 1, height: 40, background: "var(--border)" }} />
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-start", marginBottom:48 }}>
+          <div className="label rv" style={{ marginBottom: 12 }}>Personal Profile</div>
+          <h2 className="display-sm rv rv-d1" style={{ marginBottom: 20 }}>About <span className="red">Me.</span></h2>
+          <div className="rv rv-d2" style={{ width: 40, height: 4, background: "var(--red)" }} />
         </div>
 
-        <div className="about-grid" style={{ display:"grid", gridTemplateColumns:"1.1fr 0.9fr", gap:80, alignItems:"start" }}>
-          {/* Left */}
-          <div>
-            <p style={{ fontSize:20, fontFamily:"var(--font-serif)", fontStyle:"italic", color:"var(--ink2)", lineHeight:1.75, marginBottom:40 }} className="rv">
-              "{info?.bio}"
+        <div className="about-content-wrapper" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
+          {/* Left: Bio Text */}
+          <div className="rv rv-d1">
+            <p style={{ 
+              fontSize: 18, 
+              color: "var(--ink2)", 
+              lineHeight: 1.8, 
+              marginBottom: 32,
+              fontWeight: 400,
+              fontFamily: "var(--font-body)"
+            }}>
+              {info?.about_bio || "Software Engineering student at COMSATS University Islamabad (Vehari Campus) with hands-on experience in Android and full-stack development. I specialize in building production-ready mobile and web applications, delivering end-to-end solutions from intuitive user interfaces to scalable backend systems. Committed to clean, maintainable code and driven by a focus on real-world impact, I continuously refine my skills through professional and freelance projects."}
             </p>
-            <hr className="hr" style={{ marginBottom:36 }} />
-            <div className="about-info-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:0 }}>
-              {[
-                { l:"University", v: info?.university, i:"🎓" },
-                { l:"Location",   v: info?.location,   i:"📍" },
-                { l:"Email",      v: info?.email,      i:"✉️" },
-                { l:"Experience", v:`${info?.years_exp ?? 2}+ Years`, i:"⚡" },
-              ].map((item, idx) => (
-                <div key={item.l} className="rv" style={{
-                  padding:"20px 0",
-                  borderBottom:"1px solid var(--border)",
-                  borderRight: idx % 2 === 0 ? "1px solid var(--border)" : "none",
-                  paddingRight: idx % 2 === 0 ? 24 : 0,
-                  paddingLeft: idx % 2 === 1 ? 24 : 0,
-                  animationDelay: `${idx * 0.1}s`,
-                }}>
-                  <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.15em", textTransform:"uppercase", color:"var(--muted)", marginBottom:6 }}>{item.l}</div>
-                  <div style={{ fontSize:14, color:"var(--ink)", fontWeight:500, wordBreak:"break-word" }}>{item.v}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop:36 }} className="rv rv-d2">
+            <div className="rv rv-d2">
               <a href={info?.github} target="_blank" rel="noreferrer" className="btn-dark">
-                <span>View GitHub</span><span>↗</span>
+                <span>Explore GitHub</span><span>↗</span>
               </a>
             </div>
           </div>
 
-          {/* Right — Timeline */}
-          <div className="rv-r">
-            <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.15em", textTransform:"uppercase", color:"var(--muted)", marginBottom:28 }}>Experience</div>
-            <div style={{ position:"relative" }}>
-              {/* Vertical line */}
-              <div style={{ position:"absolute", left:0, top:0, bottom:0, width:1, background:"var(--border)" }} />
-
-              {[
-                { period:"2023 — Present", role:"B.S. Software Engineering", company:"COMSATS Univ., Vehari", desc:"Full-stack dev, mobile applications & AI/ML coursework.", accent:"var(--red)" },
-                { period:"2024 — Present", role:"Full Stack Developer",      company:"Freelance · Remote",    desc:"Building web & Android apps for international clients.", accent:"var(--ink3)" },
-                { period:"2023 — 2024",    role:"AI & ML Developer",         company:"Academic Projects",     desc:"TensorFlow, scikit-learn, Pandas — coursework & research.", accent:"var(--ink3)" },
-              ].map((t, i) => (
-                <div key={i} style={{ paddingLeft:28, paddingBottom: i < 2 ? 36 : 0, position:"relative" }}>
-                  <div style={{ position:"absolute", left:-4, top:4, width:9, height:9, borderRadius:"50%", background: i===0 ? "var(--red)" : "var(--muted2)", border:"2px solid var(--cream)" }} />
-                  <div style={{ fontSize:10, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"var(--muted2)", marginBottom:6 }}>{t.period}</div>
-                  <div style={{ fontFamily:"var(--font-body)", fontSize:15, fontWeight:600, color:"var(--ink)", marginBottom:4 }}>{t.role}</div>
-                  <div style={{ fontSize:12, color: t.accent, fontWeight:600, letterSpacing:"0.04em", marginBottom:6 }}>{t.company}</div>
-                  <div style={{ fontSize:13, color:"var(--muted)", lineHeight:1.7 }}>{t.desc}</div>
-                </div>
-              ))}
-            </div>
+          {/* Right: Info Cards */}
+          <div className="info-cards-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="rv rv-d2">
+            {[
+              { l: "University", v: info?.university || universityFallback, i: "🎓" },
+              { l: "Location", v: info?.location || "Vehari, Pakistan", i: "📍" },
+              { l: "Email", v: info?.email || "raoali.edu@gmail.com", i: "✉️" },
+              { l: "Experience", v: `${expYears}+ Years`, i: "⚡" },
+            ].map((item) => (
+              <div key={item.l} style={{ 
+                padding: "24px", 
+                background: "#fff", 
+                border: "1px solid var(--border)", 
+                borderRadius: 12,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.03)"
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--muted2)", marginBottom: 8 }}>{item.l}</div>
+                <div style={{ fontSize: 13, color: "var(--ink)", fontWeight: 600, lineHeight: 1.4 }}>{item.v}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

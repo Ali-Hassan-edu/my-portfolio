@@ -140,9 +140,10 @@ export default function AdminPage({ onBack }) {
       getBlogPosts(false),
     ]);
     setProfile(prof || {
-      name: "Ali Hassan", tagline: "Building modern web & app experiences",
-      bio: "Software Engineering student at COMSATS University Islamabad, Vehari Campus.",
-      university: "COMSATS University, Vehari", location: "Vehari, Pakistan",
+      name: "Ali Hassan", tagline: "Planning · Development · Deployment · Flutter",
+      bio: "Crafting excellence through precise Planning, agile Development, and seamless Deployment. I specialize in building high-performance web and mobile applications using React, Node.js, and Flutter.",
+      about_bio: "Software Engineering student at COMSATS University Islamabad (Vehari Campus) with hands-on experience in Android and full-stack development. I specialize in building production-ready mobile and web applications, delivering end-to-end solutions from intuitive user interfaces to scalable backend systems. Committed to clean, maintainable code and driven by a focus on real-world impact, I continuously refine my skills through professional and freelance projects.",
+      university: "COMSATS University Islamabad (Vehari Campus)", location: "Vehari, Pakistan",
       email: "raoali.edu@gmail.com", linkedin: "https://www.linkedin.com/in/ali-hassan-45b9b53b0",
       github: "https://github.com/Ali-Hassan-edu", available: true, years_exp: 2, projects_count: 14,
     });
@@ -447,8 +448,12 @@ function ProfileTab({ profile, setProfile, showMsg }) {
             ))}
           </div>
           <div style={{ marginBottom: 14 }}>
-            <label className="admin-label">Bio</label>
-            <textarea rows={4} value={form.bio || ""} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+            <label className="admin-label">Hero Bio</label>
+            <textarea rows={2} value={form.bio || ""} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+          </div>
+          <div style={{ marginBottom: 14 }}>
+            <label className="admin-label">About Me Bio</label>
+            <textarea rows={5} value={form.about_bio || ""} onChange={(e) => setForm({ ...form, about_bio: e.target.value })} />
           </div>
           <div className="admin-grid-3" style={{ marginBottom: 24 }}>
             <div>
