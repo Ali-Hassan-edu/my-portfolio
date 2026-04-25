@@ -34,7 +34,7 @@ export default function About({ info }) {
           </div>
 
           {/* Right: Info Cards */}
-          <div className="info-cards-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="rv rv-d2">
+          <div className="info-cards-grid rv rv-d2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             {[
               { l: "University", v: info?.university || universityFallback, i: "🎓" },
               { l: "Location", v: info?.location || "Vehari, Pakistan", i: "📍" },

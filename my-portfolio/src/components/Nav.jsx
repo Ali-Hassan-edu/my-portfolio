@@ -34,26 +34,25 @@ export default function Nav({ active, page, onPageChange }) {
     <>
       <nav style={{
         position:"fixed", top:0, left:0, right:0, zIndex:1000,
-        padding:"0 40px", height:64,
+        padding:"0 clamp(20px, 4vw, 40px)", height:64,
         display:"flex", alignItems:"center", justifyContent:"space-between",
-        background: scrolled ? "rgba(245,240,232,0.96)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(13,13,13,0.08)" : "none",
-        transition:"all 0.4s ease",
+        background: scrolled ? "rgba(245,240,232,0.98)" : "transparent",
+        backdropFilter: scrolled ? "blur(20px)" : "none",
+        borderBottom: scrolled ? "1px solid var(--border)" : "none",
+        transition:"all 0.4s cubic-bezier(0.16,1,0.3,1)",
       }}>
         <button onClick={() => { onPageChange("home"); window.scrollTo({top:0}); }}
+          aria-label="Back to top"
           style={{ background:"none", border:"none", cursor:"none", display:"flex", alignItems:"center", gap:12 }}>
           <div style={{
-            width:36, height:36, background:"var(--ink)",
+            width:40, height:40, background:"var(--ink)",
             display:"flex", alignItems:"center", justifyContent:"center",
-            fontFamily:"var(--font-display)", fontSize:14, color:"var(--cream)", letterSpacing:"0.05em",
+            fontFamily:"var(--font-display)", fontSize:16, color:"var(--cream)", letterSpacing:"0.05em",
+            borderRadius: 8
           }}>AH</div>
-          <span className="nav-name" style={{ fontFamily:"var(--font-body)", fontWeight:600, fontSize:14, color:"var(--ink)", letterSpacing:"0.04em" }}>
-            Ali Hassan
-          </span>
         </button>
 
-        <div className="nav-links-desktop" style={{ display:"flex", alignItems:"center", gap:36 }}>
+        <div className="nav-links-desktop" style={{ display:"flex", alignItems:"center", gap:32 }}>
           {links.map(l => (
             <button key={l.key} onClick={() => handleLink(l)}
               className={`nav-link${active===l.key||(l.key==="blog"&&page==="blog")?" active":""}`}>
@@ -71,27 +70,24 @@ export default function Nav({ active, page, onPageChange }) {
         </div>
 
         <div className="hamburger" onClick={() => setOpen(!open)}>
-          <span style={{ transform: open ? "rotate(45deg) translate(5px,5px)" : "none" }} />
-          <span style={{ opacity: open ? 0 : 1 }} />
-          <span style={{ transform: open ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
+          <span style={{ transform: open ? "rotate(45deg) translate(5px,5px)" : "none", background: "var(--ink)" }} />
+          <span style={{ opacity: open ? 0 : 1, background: "var(--ink)" }} />
+          <span style={{ transform: open ? "rotate(-45deg) translate(5px,-5px)" : "none", background: "var(--ink)" }} />
         </div>
       </nav>
 
       {open && <div onClick={() => setOpen(false)} style={{ position:"fixed", inset:0, zIndex:1099, background:"rgba(0,0,0,0.4)" }} />}
-      {open && (
-        <div className="nav-links open">
-          {links.map(l => (
-            <button key={l.key} onClick={() => handleLink(l)} className="nav-link"
-              style={{ background:"none", border:"none", cursor:"none", width:"100%", textAlign:"left" }}>
-              {l.label}
-            </button>
-          ))}
-          <button onClick={() => { setOpen(false); onPageChange("admin"); }}
-            className="btn-dark" style={{ marginTop:16 }}>
-            <span>Admin Panel</span>
+      <div className={`nav-links ${open ? 'open' : ''}`}>
+        {links.map(l => (
+          <button key={l.key} onClick={() => handleLink(l)} className={`nav-link ${active === l.key || (l.key === "blog" && page === "blog") ? "active" : ""}`}>
+            {l.label}
           </button>
-        </div>
-      )}
+        ))}
+        <button onClick={() => { setOpen(false); onPageChange("admin"); }}
+          className="btn-dark" style={{ marginTop: 24, width: "100%", justifyContent: "center" }}>
+          <span>Admin Panel</span>
+        </button>
+      </div>
     </>
   );
 }

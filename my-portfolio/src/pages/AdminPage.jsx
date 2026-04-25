@@ -5,10 +5,10 @@ import { getBlogPosts, addBlogPost, updateBlogPost, deleteBlogPost } from "../se
 import { estimateReadingTime } from "../utils/helpers";
 import { uploadImage } from "../services/supabase";
 
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || "ali2024";
+const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || "rao07";
 
 const EMPTY_PROJECT = {
-  type: "app", title: "", description: "", technologies: "", live_link: "", github_link: "",
+  type: "app", title: "", description: "", technologies: "", live_link: "", github_link: "", playstore_link: "",
   image_url: "", category: "", year: new Date().getFullYear().toString(), color: "#0ea5e9",
   tagline: "", features: "", screenshots: [], platform: "Android",
 };
@@ -97,24 +97,37 @@ const ADMIN_CSS = `
 @media (max-width: 768px) {
   .admin-sidebar { display:none; }
   .admin-mobile-nav {
-    display:flex !important; gap:4px; padding:12px 16px;
+    display:flex !important; gap:8px; padding:12px 16px;
     overflow-x:auto; border-bottom:1px solid var(--border);
     background:var(--cream); position:sticky; top:64px; z-index:91;
+    scrollbar-width: none;
   }
+  .admin-mobile-nav::-webkit-scrollbar { display: none; }
   .admin-mobile-nav button {
-    flex-shrink:0; padding:8px 16px; border-radius:8px; border:none; cursor:pointer;
-    font-size:12px; font-weight:600; background:var(--cream2); color:var(--muted);
-    white-space:nowrap;
+    flex-shrink:0; padding:10px 18px; border-radius:12px; border:none; cursor:pointer;
+    font-size:12px; font-weight:700; background:var(--cream2); color:var(--muted);
+    white-space:nowrap; transition: all 0.2s;
   }
-  .admin-mobile-nav button.active { background:var(--ink); color:var(--cream); }
+  .admin-mobile-nav button.active { background:var(--ink); color:var(--cream); transform: scale(1.05); }
   .admin-topbar { display:none !important; }
-  .admin-content { padding:24px 16px 60px; }
-  .admin-form-grid { grid-template-columns:1fr; }
-  .admin-grid-2 { grid-template-columns:1fr; }
-  .admin-grid-3 { grid-template-columns:1fr; }
+  .admin-content { padding:20px 20px 80px; }
+  .admin-form-grid { grid-template-columns:1fr; gap: 24px; }
+  .admin-grid-2 { grid-template-columns:1fr; gap: 12px; }
+  .admin-grid-3 { grid-template-columns:1fr; gap: 12px; }
+  .admin-item { flex-direction: column; gap: 12px; }
+  .admin-item div:last-child { width: 100%; display: flex; gap: 8px; }
+  .admin-item div:last-child button { flex: 1; }
 }
 @media (min-width: 769px) {
   .admin-mobile-nav { display:none !important; }
+}
+.login-card { 
+  background: #fff; border: 1px solid var(--border); 
+  border-radius: 24px; padding: 48px 40px; width: 100%; maxWidth: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+}
+@media (max-width: 480px) {
+  .login-card { padding: 32px 24px; }
 }
 `;
 
@@ -173,20 +186,23 @@ export default function AdminPage({ onBack }) {
     return (
       <>
         <style>{ADMIN_CSS}</style>
-        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, paddingTop: 80 }}>
-          <div style={{ background: "var(--border)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 400 }}>
-            <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 12, marginBottom: 28 }}>← Back to Portfolio</button>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg,#0ea5e9,#0ea5e9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24 }}>🔐</div>
-            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Admin Panel</h2>
-            <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 32 }}>Enter your admin password to continue</p>
-            <input
-              type="password" placeholder="Password" value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") login(); }}
-              style={{ marginBottom: 14, color: "var(--ink)", borderBottom: "1px solid var(--muted)" }}
-            />
-            {authError && <p style={{ fontSize: 12, color: "#0ea5e9", marginBottom: 14 }}>{authError}</p>}
-            <button className="btn-primary" style={{ width: "100%", padding: "13px 20px" }} onClick={login}>Login →</button>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div className="login-card">
+            <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 12, marginBottom: 24, fontWeight: 600 }}>← Back to Portfolio</button>
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: "var(--ink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24, color: "var(--cream)" }}>🔐</div>
+            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 28, fontWeight: 800, marginBottom: 8, color: "var(--ink)" }}>Admin Panel</h2>
+            <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 32 }}>Enter your secure password to continue</p>
+            <div style={{ marginBottom: 24 }}>
+              <label className="admin-label">Access Password</label>
+              <input
+                type="password" placeholder="••••••••" value={pass}
+                onChange={(e) => setPass(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") login(); }}
+                style={{ width: "100%", padding: "12px 0", fontSize: 16 }}
+              />
+            </div>
+            {authError && <p style={{ fontSize: 12, color: "var(--red)", marginBottom: 16, fontWeight: 600 }}>{authError}</p>}
+            <button className="btn-dark" style={{ width: "100%", justifyContent: "center" }} onClick={login}>Login Access →</button>
           </div>
         </div>
       </>
@@ -501,9 +517,25 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
     if (!form.title) return alert("Title is required");
     setSaving(true);
     try {
+      const isApp = form.type === "app";
+      
+      // Strict whitelist of columns for each table
+      const commonFields = ["title", "description", "technologies", "year", "color", "github_link"];
+      const appFields = [...commonFields, "tagline", "features", "screenshots", "platform", "playstore_link"];
+      const webFields = [...commonFields, "category", "image_url", "live_link"];
+      
+      const allowedFields = isApp ? appFields : webFields;
+      const payload = {};
+      
+      allowedFields.forEach(field => {
+        if (form[field] !== undefined) {
+          payload[field] = form[field];
+        }
+      });
+
       if (editing) {
-        const updated = await updateProject(editing.id, form);
-        if (form.type === "app") {
+        const updated = await updateProject(editing.id, payload);
+        if (isApp) {
            setAppProjects(appProjects.map((p) => (p.id === editing.id ? updated : p)));
         } else {
            setWebProjects(webProjects.map((p) => (p.id === editing.id ? updated : p)));
@@ -511,8 +543,8 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
         setEditing(null);
         showMsg("Project updated!");
       } else {
-        const created = await addProject(form);
-        if (form.type === "app") {
+        const created = await addProject(payload);
+        if (isApp) {
            setAppProjects([...appProjects, created]);
         } else {
            setWebProjects([...webProjects, created]);
@@ -582,6 +614,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
             </div>
             
             {form.type === "web" && <div><label className="admin-label">Live Link</label><input value={form.live_link || ""} onChange={(e) => setForm({ ...form, live_link: e.target.value })} placeholder="https://…" /></div>}
+            {form.type === "app" && <div><label className="admin-label">Play Store Link</label><input value={form.playstore_link || ""} onChange={(e) => setForm({ ...form, playstore_link: e.target.value })} placeholder="https://play.google.com/…" /></div>}
             <div><label className="admin-label">GitHub Link</label><input value={form.github_link || ""} onChange={(e) => setForm({ ...form, github_link: e.target.value })} placeholder="https://github.com/…" /></div>
             
             {form.type === "web" && <ImageUploadField label="Image URL" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} />}

@@ -13,7 +13,7 @@ export default function Contact({ info }) {
     <section id="contact" className="section" style={{ borderTop:"1px solid var(--border)", background:"var(--cream2)" }}>
       <div className="container">
         <div style={{ display:"flex", alignItems:"center", gap:20, marginBottom:64 }}>
-          <span style={{ fontFamily:"var(--font-display)", fontSize:80, color:"rgba(13,13,13,0.06)", lineHeight:1 }}>06</span>
+          <span style={{ fontFamily:"var(--font-display)", fontSize: "clamp(50px, 12vw, 80px)", color:"rgba(13,13,13,0.06)", lineHeight:1 }}>06</span>
           <div>
             <div className="label rv">Get In Touch</div>
             <h2 className="display-sm rv rv-d1">Let's <span className="red">Talk.</span></h2>

@@ -128,8 +128,8 @@ function WebCard({ project: p }) {
        </div>
 
        {p.image_url && (
-         <div className="project-media" style={{ borderLeft: "1px solid var(--border)", background: "var(--cream2)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-           <img src={p.image_url} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+         <div className="project-media" style={{ background: "var(--cream2)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+           <img src={p.image_url} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
          </div>
        )}
     </div>
@@ -187,7 +187,13 @@ function AppCard({ project: p, onViewGallery }) {
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 14, marginTop: "auto", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 14, marginTop: "auto", alignItems: "center", flexWrap: "wrap" }}>
+          {p.playstore_link && (
+            <a href={p.playstore_link} target="_blank" rel="noreferrer" 
+               style={{ padding: "10px 20px", background: "var(--red)", color: "var(--cream)", borderRadius: 8, fontSize: 12, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+              Play Store ↗
+            </a>
+          )}
           {screenshots.length > 0 && (
             <button
               onClick={() => onViewGallery(0)}
@@ -206,18 +212,18 @@ function AppCard({ project: p, onViewGallery }) {
 
       {screenshots.length > 0 && (
         <div className="project-media project-screenshots-scroll" style={{
-          display: "flex", gap: 10, padding: "20px", overflowX: "auto", alignItems: "center", background: "transparent", borderLeft: "1px solid var(--border)"
+          display: "flex", gap: 12, padding: "20px", overflowX: "auto", alignItems: "center", background: "transparent"
         }}>
           {screenshots.map((src, i) => (
             <div
               key={i}
               onClick={() => onViewGallery(i)}
               style={{
-                flexShrink: 0, width: 140, height: "auto", aspectRatio: "9/19",
-                borderRadius: 12, border: "1px solid var(--border)", overflow: "hidden", cursor: "pointer", boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
+                flexShrink: 0, width: "clamp(120px, 20vw, 160px)", height: "auto", aspectRatio: "9/19",
+                borderRadius: 12, border: "1px solid var(--border)", overflow: "hidden", cursor: "pointer", boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
               }}
             >
-              <img src={src} alt={`screenshot ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={src} alt={`screenshot ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />
             </div>
           ))}
         </div>
