@@ -31,7 +31,7 @@ export default function Skills() {
           <div className="rv rv-d2" style={{ width: 1, height: 40, background: "var(--border)" }} />
         </div>
 
-        <div className="skills-grid" style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:0 }}>
+        <div className="skills-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", gap:0 }}>
           {groups.map((g, gi) => (
             <div key={g.name} className="rv" style={{
               padding:"32px 28px",

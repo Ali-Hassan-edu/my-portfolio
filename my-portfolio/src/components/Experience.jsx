@@ -49,7 +49,7 @@ export default function Experience() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {experiences.map((exp, idx) => (
-            <div key={idx} className="rv exp-item" style={{ 
+            <div key={idx} className="rv exp-item experience-grid" style={{ 
               display: "grid", 
               gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", 
               gap: "24px 40px", 

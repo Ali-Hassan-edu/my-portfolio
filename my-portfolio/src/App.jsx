@@ -247,6 +247,14 @@ textarea { resize: none; }
   .hero-photo { justify-content: center !important; order: -1; margin-bottom: 40px; }
   .about-content-wrapper { grid-template-columns: 1fr !important; gap: 40px !important; }
   .info-cards-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+
+  .skills-grid { grid-template-columns: 1fr !important; }
+  .skills-grid > div { border-right: none !important; border-bottom: 1px solid var(--border) !important; }
+  .skills-grid > div:last-child { border-bottom: none !important; }
+
+  .experience-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+  .contact-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+  .footer-grid { flex-direction: column !important; align-items: center !important; text-align: center !important; }
 }
 
 .hr { border: none; border-top: 1px solid var(--border); }
@@ -282,18 +290,22 @@ export default function App() {
 
   useEffect(() => {
     async function load() {
+      // First, get the profile so we can show the hero immediately
+      const prof = await getProfile();
+      if (prof) setInfo(prof);
+      
+      // Then, get projects and blog posts
       try {
-        const [prof, web, app, blogs] = await Promise.all([
-          getProfile(), getProjects("web"), getProjects("app"), getBlogPosts(true),
+        const [web, app, blogs] = await Promise.all([
+          getProjects("web"), getProjects("app"), getBlogPosts(true),
         ]);
-        if (prof) setInfo(prof);
         setProjects([
           ...(app || []).map(p => ({ ...p, type: "app" })),
           ...(web || []).map(p => ({ ...p, type: "web" }))
         ].sort((a, b) => parseInt(b.year || 0) - parseInt(a.year || 0)));
         setBlogPosts(blogs || []);
       } catch (err) {
-        console.error("Load error:", err);
+        console.error("Delayed load error:", err);
       }
     }
     load();

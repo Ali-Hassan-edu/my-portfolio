@@ -2,7 +2,7 @@ export default function Footer({ info }) {
   return (
     <footer style={{ background:"var(--ink)", padding:"48px 0 32px", borderTop:"1px solid rgba(255,255,255,0.06)" }}>
       <div className="container">
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:48, flexWrap:"wrap", gap:32 }}>
+        <div className="footer-grid" style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:48, flexWrap:"wrap", gap:32 }}>
           <div>
             <div style={{ fontFamily:"var(--font-display)", fontSize:48, color:"var(--cream)", lineHeight:0.9, letterSpacing:"0.02em", marginBottom:16 }}>
               ALI<br/><span style={{ color:"var(--red)" }}>HASSAN</span>
