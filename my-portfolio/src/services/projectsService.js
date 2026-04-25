@@ -14,8 +14,8 @@ export async function getProjects(type) {
   return data || [];
 }
 
-export async function addProject(project) {
-  const table = tableFor(project.type);
+export async function addProject(type, project) {
+  const table = tableFor(type);
   const { data, error } = await supabase
     .from(table)
     .insert([project])
@@ -25,8 +25,8 @@ export async function addProject(project) {
   return data;
 }
 
-export async function updateProject(id, project) {
-  const table = tableFor(project.type);
+export async function updateProject(id, type, project) {
+  const table = tableFor(type);
   const { data, error } = await supabase
     .from(table)
     .update(project)

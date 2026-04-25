@@ -534,7 +534,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
       });
 
       if (editing) {
-        const updated = await updateProject(editing.id, payload);
+        const updated = await updateProject(editing.id, form.type, payload);
         if (isApp) {
            setAppProjects(appProjects.map((p) => (p.id === editing.id ? updated : p)));
         } else {
@@ -543,7 +543,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
         setEditing(null);
         showMsg("Project updated!");
       } else {
-        const created = await addProject(payload);
+        const created = await addProject(form.type, payload);
         if (isApp) {
            setAppProjects([...appProjects, created]);
         } else {
