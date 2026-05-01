@@ -21,7 +21,7 @@ export default function BlogPage({ posts, onBack }) {
   return (
     <div style={{ minHeight: "100vh", paddingTop: 80 }}>
       {/* Header */}
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "40px 0 32px" }}>
+      <div className="blog-header">
         <div className="container">
           <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 13, marginBottom: 20, display: "flex", alignItems: "center", gap: 6 }}>
             ← Back to Portfolio
@@ -38,7 +38,7 @@ export default function BlogPage({ posts, onBack }) {
 
       <div className="container" style={{ paddingTop: 40, paddingBottom: 80 }}>
         {/* Search + Filters */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 36, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="blog-toolbar">
           <input
             type="text" placeholder="Search articles…" value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -66,7 +66,7 @@ export default function BlogPage({ posts, onBack }) {
             {posts?.length === 0 ? "No blog posts published yet." : "No results found."}
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 22 }}>
+          <div className="blog-grid">
             {filtered.map((post) => (
               <BlogCard key={post.id} post={post} onClick={() => setSelected(post)} />
             ))}
@@ -107,7 +107,7 @@ function BlogPostDetail({ post, onBack }) {
   const readingTime = estimateReadingTime(post.content || post.description);
   return (
     <div style={{ minHeight: "100vh", paddingTop: 80 }}>
-      <div className="container" style={{ maxWidth: 760, paddingTop: 48, paddingBottom: 80 }}>
+      <div className="container blog-detail">
         <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 13, marginBottom: 32, display: "flex", alignItems: "center", gap: 6 }}>
           ← Back to Blog
         </button>
@@ -117,7 +117,7 @@ function BlogPostDetail({ post, onBack }) {
           ))}
         </div>
         <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(24px,4vw,42px)", letterSpacing: "-1px", color: "var(--ink)", marginBottom: 16, lineHeight: 1.15 }}>{post.title}</h1>
-        <div style={{ display: "flex", gap: 20, fontSize: 12, color: "var(--muted)", marginBottom: 40 }}>
+        <div className="blog-detail-meta">
           <span>{formatDate(post.created_at)}</span>
           <span>{readingTime}</span>
           {post.category && <span>{post.category}</span>}

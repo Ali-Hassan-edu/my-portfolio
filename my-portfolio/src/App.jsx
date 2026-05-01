@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
@@ -28,6 +29,33 @@ const DEFAULT_INFO = {
   years_exp: 2,
   projects_count: 14,
 };
+
+const CACHE_TTL_MS = 10 * 60 * 1000;
+const CACHE_KEYS = {
+  profile: "portfolio.profile",
+  projects: "portfolio.projects",
+  blogs: "portfolio.blogs",
+};
+
+function readCache(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data }));
+  } catch {
+    // Ignore storage failures (private mode, quota, etc.)
+  }
+}
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
@@ -180,21 +208,48 @@ a, button { cursor: none; }
   .project-card.has-media > .project-media { flex: 1; border-left: 1px solid var(--border); }
 }
 
-.nav-link {
-  font-size: 11px; font-weight: 700; color: var(--ink);
-  letter-spacing: 0.12em; text-transform: uppercase;
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 72px; padding: 0 clamp(20px, 4vw, 48px);
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(245,240,232,0.6); backdrop-filter: blur(18px);
+  border-bottom: 1px solid transparent;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.site-nav.scrolled {
+  background: rgba(245,240,232,0.96);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 16px 40px rgba(13,13,13,0.08);
+}
+.nav-logo-btn {
   background: none; border: none; cursor: none;
-  padding: 6px 0; position: relative;
-  transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-  opacity: 0.6;
+  display: flex; align-items: center; gap: 12px;
 }
-.nav-link::after {
-  content: ''; position: absolute; bottom: -4px; left: 0;
-  width: 0; height: 2px; background: var(--red);
-  transition: width 0.3s cubic-bezier(0.16,1,0.3,1);
+.nav-logo {
+  width: 44px; height: 44px; border-radius: 14px; background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif); font-size: 18px; color: var(--cream);
+  letter-spacing: 0.02em; box-shadow: 0 10px 24px rgba(13,13,13,0.2);
 }
-.nav-link:hover, .nav-link.active { color: var(--ink); opacity: 1; }
-.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+.nav-links-desktop {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px; border-radius: 999px; background: #fff;
+  border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(13,13,13,0.06);
+}
+.nav-link {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  background: transparent; border: none; cursor: none;
+  padding: 8px 14px; position: relative; border-radius: 999px;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+  display: inline-flex; align-items: center;
+}
+.nav-link::after { display: none; }
+.nav-link:hover { color: var(--ink); background: var(--cream2); }
+.nav-link.active {
+  color: var(--cream); background: var(--ink);
+  box-shadow: 0 8px 18px rgba(13,13,13,0.18);
+}
 
 .nav-links { display: none; }
 
@@ -228,6 +283,9 @@ textarea { resize: none; }
 
 @media (max-width: 768px) {
   .container { padding: 0 24px; }
+  .site-nav { height: 64px; padding: 0 20px; }
+  .nav-logo { width: 38px; height: 38px; font-size: 16px; }
+  .nav-links { padding: 110px 28px 28px; }
   .nav-links-desktop { display: none !important; }
   .hamburger { display: flex; }
   .nav-links {
@@ -245,6 +303,7 @@ textarea { resize: none; }
   }
   .hero-grid { grid-template-columns: 1fr !important; text-align: center; }
   .hero-photo { justify-content: center !important; order: -1; margin-bottom: 40px; }
+  .hero-photo > div { width: clamp(220px, 60vw, 320px) !important; height: clamp(220px, 60vw, 320px) !important; }
   .about-content-wrapper { grid-template-columns: 1fr !important; gap: 40px !important; }
   .info-cards-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
 
@@ -253,9 +312,16 @@ textarea { resize: none; }
   .skills-grid > div:last-child { border-bottom: none !important; }
 
   .experience-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+  .exp-item { padding: 32px 0 !important; }
   .contact-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
   .footer-grid { flex-direction: column !important; align-items: center !important; text-align: center !important; }
 }
+
+.blog-header { padding: 40px 0 32px; border-bottom: 1px solid var(--border); }
+.blog-toolbar { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 36px; }
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; }
+.blog-detail { max-width: 760px; padding-top: 48px; padding-bottom: 80px; }
+.blog-detail-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-bottom: 40px; }
 
 .hr { border: none; border-top: 1px solid var(--border); }
 
@@ -277,19 +343,36 @@ textarea { resize: none; }
   .display { font-size: 48px; }
   .display-sm { font-size: 36px; }
   .info-cards-grid { grid-template-columns: 1fr !important; }
+  .nav-links .nav-link { font-size: 26px; }
+  .hero-grid { gap: 32px !important; }
+  .marquee-item { font-size: 18px; padding: 0 20px; }
+  .btn-dark, .btn-outline { width: 100%; justify-content: center; }
+  .blog-toolbar input { max-width: 100% !important; }
+  .blog-grid { grid-template-columns: 1fr; }
+  .blog-detail { padding-top: 32px; }
 }
 `;
 
 export default function App() {
-  const [page, setPage] = useState("home");
   const [active, setActive] = useState("hero");
   const [showTop, setShowTop] = useState(false);
   const [info, setInfo] = useState(DEFAULT_INFO);
   const [projects, setProjects] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/";
+  const isAdmin = location.pathname.startsWith("/admin");
 
   useEffect(() => {
     async function load() {
+      const cachedProfile = readCache(CACHE_KEYS.profile);
+      const cachedProjects = readCache(CACHE_KEYS.projects);
+      const cachedBlogs = readCache(CACHE_KEYS.blogs);
+      if (cachedProfile) setInfo(cachedProfile);
+      if (cachedProjects) setProjects(cachedProjects);
+      if (cachedBlogs) setBlogPosts(cachedBlogs);
+
       // First, get the profile so we can show the hero immediately
       const prof = await getProfile();
       if (prof) setInfo(prof);
@@ -304,6 +387,12 @@ export default function App() {
           ...(web || []).map(p => ({ ...p, type: "web" }))
         ].sort((a, b) => parseInt(b.year || 0) - parseInt(a.year || 0)));
         setBlogPosts(blogs || []);
+        if (prof) writeCache(CACHE_KEYS.profile, prof);
+        writeCache(CACHE_KEYS.projects, [
+          ...(app || []).map(p => ({ ...p, type: "app" })),
+          ...(web || []).map(p => ({ ...p, type: "web" }))
+        ].sort((a, b) => parseInt(b.year || 0) - parseInt(a.year || 0)));
+        writeCache(CACHE_KEYS.blogs, blogs || []);
       } catch (err) {
         console.error("Delayed load error:", err);
       }
@@ -312,7 +401,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (page !== "home") return;
+    if (!isHome) return;
     const sections = ["hero","about","experience","projects","skills","contact"];
     const obs = new IntersectionObserver(
       (entries) => { entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }); },
@@ -320,24 +409,27 @@ export default function App() {
     );
     sections.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
     return () => obs.disconnect();
-  }, [page]);
+  }, [isHome]);
 
   useEffect(() => {
+    if (isAdmin) return;
     const fn = () => setShowTop(window.scrollY > 400);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
+    if (isAdmin) return;
     const obs = new IntersectionObserver(
       (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("in"); }),
       { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
     );
     document.querySelectorAll(".rv, .rv-l, .rv-r").forEach(el => obs.observe(el));
     return () => obs.disconnect();
-  });
+  }, [isAdmin]);
 
   useEffect(() => {
+    if (isAdmin) return;
     const dot = document.getElementById("cur-dot");
     const ring = document.getElementById("cur-ring");
     if (!dot || !ring) return;
@@ -353,30 +445,25 @@ export default function App() {
       el.addEventListener("mouseleave", leave);
     });
     return () => document.removeEventListener("mousemove", move);
-  });
+  }, [isAdmin]);
 
   return (
     <>
       <style>{CSS}</style>
-      <div id="cur-dot" className="cursor-dot" />
-      <div id="cur-ring" className="cursor-ring" />
-      <Nav active={active} page={page} onPageChange={(p) => { setPage(p); window.scrollTo({ top: 0 }); }} />
+      {!isAdmin && <div id="cur-dot" className="cursor-dot" />}
+      {!isAdmin && <div id="cur-ring" className="cursor-ring" />}
+      {!isAdmin && <Nav active={active} />}
 
-      {page === "home" && (
-        <main>
-          <Hero info={info} />
-          <About info={info} />
-          <Experience />
-          <Projects projects={projects} />
-          <Skills />
-          <Contact info={info} />
-        </main>
-      )}
-      {page === "blog" && <BlogPage posts={blogPosts} onBack={() => { setPage("home"); window.scrollTo({ top: 0 }); }} />}
-      {page === "admin" && <AdminPage onBack={() => { setPage("home"); window.scrollTo({ top: 0 }); }} />}
-      {page === "home" && <Footer info={info} />}
+      <Routes>
+        <Route path="/" element={<HomePage info={info} projects={projects} />} />
+        <Route path="/blog" element={<BlogPage posts={blogPosts} onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
+        <Route path="/admin/*" element={<AdminPage onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
+        <Route path="*" element={<NotFound onHome={() => navigate("/")} />} />
+      </Routes>
 
-      {showTop && (
+      {!isAdmin && isHome && <Footer info={info} />}
+
+      {showTop && !isAdmin && (
         <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           style={{ position:"fixed", bottom:32, right:32, zIndex:999, width:48, height:48,
             background:"var(--ink)", border:"none", color:"var(--cream)", fontSize:20,
@@ -387,5 +474,31 @@ export default function App() {
         >↑</button>
       )}
     </>
+  );
+}
+
+function HomePage({ info, projects }) {
+  return (
+    <main>
+      <Hero info={info} />
+      <About info={info} />
+      <Experience />
+      <Projects projects={projects} />
+      <Skills />
+      <Contact info={info} />
+    </main>
+  );
+}
+
+function NotFound({ onHome }) {
+  return (
+    <div style={{ minHeight: "100vh", paddingTop: 120, textAlign: "center" }}>
+      <div className="container">
+        <div className="label" style={{ justifyContent: "center", marginBottom: 12 }}>Not Found</div>
+        <h1 className="display-sm" style={{ marginBottom: 16 }}>Page Missing</h1>
+        <p style={{ color: "var(--muted)", marginBottom: 28 }}>The page you are looking for does not exist.</p>
+        <button className="btn-dark" onClick={onHome}><span>Go Home</span></button>
+      </div>
+    </div>
   );
 }

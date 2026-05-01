@@ -3,9 +3,13 @@ import { getProfile, updateProfile } from "../services/profileService";
 import { getProjects, addProject, updateProject, deleteProject } from "../services/projectsService";
 import { getBlogPosts, addBlogPost, updateBlogPost, deleteBlogPost } from "../services/blogService";
 import { estimateReadingTime } from "../utils/helpers";
-import { uploadImage } from "../services/supabase";
+import { supabase, uploadImage } from "../services/supabase";
 
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || "rao07";
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+const ADMIN_ROLE = (import.meta.env.VITE_ADMIN_ROLE || "admin").toLowerCase();
 
 const EMPTY_PROJECT = {
   type: "app", title: "", description: "", technologies: "", live_link: "", github_link: "", playstore_link: "",
@@ -57,6 +61,16 @@ const ADMIN_CSS = `
 .admin-item {
   padding:16px 18px; border-radius:12px; background:#fff;
   border:1px solid var(--border); display:flex; align-items:flex-start; gap:14px;
+}
+.admin-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+}
+.admin-item-actions {
+  display: flex; gap: 6px; flex-shrink: 0; align-items: center; justify-content: flex-end;
+  align-self: center; flex-wrap: wrap;
 }
 .admin-item:hover { background:var(--cream2); border-color:var(--ink); }
 .admin-item-title { font-family:var(--font-body); font-size:14px; font-weight:700; color:var(--ink); }
@@ -115,6 +129,8 @@ const ADMIN_CSS = `
   .admin-grid-2 { grid-template-columns:1fr; gap: 12px; }
   .admin-grid-3 { grid-template-columns:1fr; gap: 12px; }
   .admin-item { flex-direction: column; gap: 12px; }
+  .admin-item-row { grid-template-columns: 1fr; row-gap: 12px; }
+  .admin-item-actions { width: 100%; justify-content: flex-end; }
   .admin-item div:last-child { width: 100%; display: flex; gap: 8px; }
   .admin-item div:last-child button { flex: 1; }
 }
@@ -123,7 +139,7 @@ const ADMIN_CSS = `
 }
 .login-card { 
   background: #fff; border: 1px solid var(--border); 
-  border-radius: 24px; padding: 48px 40px; width: 100%; maxWidth: 420px;
+  border-radius: 24px; padding: 48px 40px; width: 100%; max-width: 420px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.05);
 }
 @media (max-width: 480px) {
@@ -131,11 +147,21 @@ const ADMIN_CSS = `
 }
 `;
 
+function isAdminUser(user) {
+  if (!user) return false;
+  const email = (user.email || "").toLowerCase();
+  const role = (user.app_metadata?.role || user.user_metadata?.role || "").toLowerCase();
+  if (ADMIN_EMAILS.length > 0 && ADMIN_EMAILS.includes(email)) return true;
+  return role === ADMIN_ROLE;
+}
+
 export default function AdminPage({ onBack }) {
   const [tab, setTab] = useState("dashboard");
-  const [pass, setPass] = useState("");
-  const [authed, setAuthed] = useState(false);
+  const [authForm, setAuthForm] = useState({ email: "", password: "" });
   const [authError, setAuthError] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authBusy, setAuthBusy] = useState(false);
+  const [user, setUser] = useState(null);
   const [message, setMessage] = useState("");
 
   const [profile, setProfile] = useState(null);
@@ -143,6 +169,30 @@ export default function AdminPage({ onBack }) {
   const [appProjects, setAppProjects] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!alive) return;
+      setUser(data.session?.user ?? null);
+      setAuthLoading(false);
+    });
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+    return () => {
+      alive = false;
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  const adminAllowed = isAdminUser(user);
+
+  useEffect(() => {
+    if (!user || !adminAllowed) return;
+    loadAll();
+  }, [user, adminAllowed]);
 
   async function loadAll() {
     setLoading(true);
@@ -166,14 +216,24 @@ export default function AdminPage({ onBack }) {
     setLoading(false);
   }
 
-  function login() {
-    if (pass === ADMIN_PASS) {
-      setAuthed(true);
-      setAuthError("");
-      loadAll();
-    } else {
-      setAuthError("Incorrect password");
+  async function login() {
+    if (!authForm.email || !authForm.password) {
+      setAuthError("Email and password are required");
+      return;
     }
+    setAuthError("");
+    setAuthBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: authForm.email,
+      password: authForm.password,
+    });
+    if (error) setAuthError(error.message);
+    setAuthBusy(false);
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    setUser(null);
   }
 
   function showMsg(msg) {
@@ -181,8 +241,19 @@ export default function AdminPage({ onBack }) {
     setTimeout(() => setMessage(""), 3000);
   }
 
+  if (authLoading) {
+    return (
+      <>
+        <style>{ADMIN_CSS}</style>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, color: "var(--muted)" }}>
+          Checking admin access…
+        </div>
+      </>
+    );
+  }
+
   // Login screen
-  if (!authed) {
+  if (!user) {
     return (
       <>
         <style>{ADMIN_CSS}</style>
@@ -191,18 +262,46 @@ export default function AdminPage({ onBack }) {
             <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 12, marginBottom: 24, fontWeight: 600 }}>← Back to Portfolio</button>
             <div style={{ width: 56, height: 56, borderRadius: 16, background: "var(--ink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24, color: "var(--cream)" }}>🔐</div>
             <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 28, fontWeight: 800, marginBottom: 8, color: "var(--ink)" }}>Admin Panel</h2>
-            <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 32 }}>Enter your secure password to continue</p>
-            <div style={{ marginBottom: 24 }}>
-              <label className="admin-label">Access Password</label>
+            <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 32 }}>Sign in with your admin credentials</p>
+            <div style={{ marginBottom: 16 }}>
+              <label className="admin-label">Email</label>
               <input
-                type="password" placeholder="••••••••" value={pass}
-                onChange={(e) => setPass(e.target.value)}
+                type="email" placeholder="admin@example.com" value={authForm.email}
+                onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                onKeyDown={(e) => { if (e.key === "Enter") login(); }}
+                style={{ width: "100%", padding: "12px 0", fontSize: 16 }}
+              />
+            </div>
+            <div style={{ marginBottom: 24 }}>
+              <label className="admin-label">Password</label>
+              <input
+                type="password" placeholder="••••••••" value={authForm.password}
+                onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
                 onKeyDown={(e) => { if (e.key === "Enter") login(); }}
                 style={{ width: "100%", padding: "12px 0", fontSize: 16 }}
               />
             </div>
             {authError && <p style={{ fontSize: 12, color: "var(--red)", marginBottom: 16, fontWeight: 600 }}>{authError}</p>}
-            <button className="btn-dark" style={{ width: "100%", justifyContent: "center" }} onClick={login}>Login Access →</button>
+            <button className="btn-dark" style={{ width: "100%", justifyContent: "center", opacity: authBusy ? 0.7 : 1 }} onClick={login} disabled={authBusy}>
+              {authBusy ? "Signing in…" : "Login Access →"}
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!adminAllowed) {
+    return (
+      <>
+        <style>{ADMIN_CSS}</style>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div className="login-card">
+            <div style={{ width: 56, height: 56, borderRadius: 16, background: "var(--ink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 24, color: "var(--cream)" }}>⛔</div>
+            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 8, color: "var(--ink)" }}>Access Restricted</h2>
+            <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 24 }}>Your account does not have admin privileges.</p>
+            <button className="btn-outline" style={{ width: "100%", justifyContent: "center", marginBottom: 12 }} onClick={logout}>Sign Out</button>
+            <button className="btn-dark" style={{ width: "100%", justifyContent: "center" }} onClick={onBack}><span>Back to Portfolio</span></button>
           </div>
         </div>
       </>
@@ -257,6 +356,10 @@ export default function AdminPage({ onBack }) {
           </nav>
 
           <div className="admin-sidebar-footer">
+            <button onClick={logout} className="admin-nav-btn">
+              <span className="nav-icon">⏻</span>
+              <span>Sign Out</span>
+            </button>
             <button onClick={onBack} className="admin-nav-btn">
               <span className="nav-icon">←</span>
               <span>Back to Portfolio</span>
@@ -271,6 +374,9 @@ export default function AdminPage({ onBack }) {
               {item.icon} {item.label}
             </button>
           ))}
+          <button onClick={logout}>
+            ⏻ Sign Out
+          </button>
         </div>
 
         {/* MAIN */}
@@ -282,6 +388,7 @@ export default function AdminPage({ onBack }) {
               <span style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{currentNav?.label}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <button onClick={logout} className="admin-btn-edit">Sign Out</button>
               <div style={{
                 padding: "4px 12px", borderRadius: 20,
                 background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.15)",
@@ -662,7 +769,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
           <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 14, fontWeight: 600 }}>{allProjects.length} project{allProjects.length !== 1 ? "s" : ""}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxHeight: 650, overflowY: "auto" }}>
             {allProjects.map((p) => (
-              <div key={`${p.type}-${p.id}`} className="admin-item">
+              <div key={`${p.type}-${p.id}`} className="admin-item admin-item-row">
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="admin-item-title">{p.title}</div>
                   <div className="admin-item-sub">
@@ -670,7 +777,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
                   </div>
                   <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.description || p.tagline}</div>
                 </div>
-                <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                <div className="admin-item-actions">
                   <button onClick={() => startEdit(p)} className="admin-btn-edit">Edit</button>
                   <button onClick={() => remove(p.id, p.type)} className="admin-btn-delete">Delete</button>
                 </div>
@@ -801,14 +908,15 @@ function BlogTab({ posts, setPosts, showMsg }) {
 function SettingsTab({ showMsg }) {
   const [newPass, setNewPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
-  const [current, setCurrent] = useState("");
 
-  function changePassword() {
-    if (current !== ADMIN_PASS) return alert("Current password is incorrect");
+  async function changePassword() {
     if (!newPass || newPass.length < 6) return alert("New password must be at least 6 characters");
     if (newPass !== confirmPass) return alert("Passwords don't match");
-    showMsg("Password updated in session (restart required for persistence)");
-    setNewPass(""); setConfirmPass(""); setCurrent("");
+    const { error } = await supabase.auth.updateUser({ password: newPass });
+    if (error) return alert(error.message);
+    showMsg("Password updated successfully");
+    setNewPass("");
+    setConfirmPass("");
   }
 
   return (
@@ -818,7 +926,6 @@ function SettingsTab({ showMsg }) {
         <div className="admin-card admin-form-card" style={{ marginBottom: 24 }}>
           <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, color: "var(--ink)", marginBottom: 18 }}>🔑 Change Password</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 18 }}>
-            <div><label className="admin-label">Current Password</label><input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} /></div>
             <div><label className="admin-label">New Password</label><input type="password" value={newPass} onChange={(e) => setNewPass(e.target.value)} /></div>
             <div><label className="admin-label">Confirm New Password</label><input type="password" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} /></div>
           </div>
