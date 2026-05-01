@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
@@ -8,8 +8,6 @@ import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Contact from "./components/Contact";
-import BlogPage from "./pages/BlogPage";
-import AdminPage from "./pages/AdminPage";
 import { getProfile } from "./services/profileService";
 import { getProjects } from "./services/projectsService";
 import { getBlogPosts } from "./services/blogService";
@@ -36,6 +34,9 @@ const CACHE_KEYS = {
   projects: "portfolio.projects",
   blogs: "portfolio.blogs",
 };
+
+const BlogPage = lazy(() => import("./pages/BlogPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
 
 function readCache(key) {
   try {
@@ -454,12 +455,14 @@ export default function App() {
       {!isAdmin && <div id="cur-ring" className="cursor-ring" />}
       {!isAdmin && <Nav active={active} />}
 
-      <Routes>
-        <Route path="/" element={<HomePage info={info} projects={projects} />} />
-        <Route path="/blog" element={<BlogPage posts={blogPosts} onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
-        <Route path="/admin/*" element={<AdminPage onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
-        <Route path="*" element={<NotFound onHome={() => navigate("/")} />} />
-      </Routes>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/" element={<HomePage info={info} projects={projects} />} />
+          <Route path="/blog" element={<BlogPage posts={blogPosts} onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
+          <Route path="/admin/*" element={<AdminPage onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
+          <Route path="*" element={<NotFound onHome={() => navigate("/")} />} />
+        </Routes>
+      </Suspense>
 
       {!isAdmin && isHome && <Footer info={info} />}
 
@@ -498,6 +501,17 @@ function NotFound({ onHome }) {
         <h1 className="display-sm" style={{ marginBottom: 16 }}>Page Missing</h1>
         <p style={{ color: "var(--muted)", marginBottom: 28 }}>The page you are looking for does not exist.</p>
         <button className="btn-dark" onClick={onHome}><span>Go Home</span></button>
+      </div>
+    </div>
+  );
+}
+
+function RouteFallback() {
+  return (
+    <div style={{ minHeight: "100vh", paddingTop: 120, textAlign: "center" }}>
+      <div className="container">
+        <div className="label" style={{ justifyContent: "center", marginBottom: 12 }}>Loading</div>
+        <p style={{ color: "var(--muted)" }}>Preparing the page…</p>
       </div>
     </div>
   );
