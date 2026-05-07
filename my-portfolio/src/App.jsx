@@ -211,46 +211,48 @@ a, button { cursor: none; }
 
 .site-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  height: 72px; padding: 0 clamp(20px, 4vw, 48px);
+  height: 70px; padding: 0 clamp(20px, 4vw, 48px);
   display: flex; align-items: center; justify-content: space-between;
-  background: rgba(245,240,232,0.6); backdrop-filter: blur(18px);
-  border-bottom: 1px solid transparent;
-  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  background: rgba(245,240,232,0.92);
+  border-bottom: 1px solid rgba(13,13,13,0.06);
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
 }
 .site-nav.scrolled {
-  background: rgba(245,240,232,0.96);
+  background: rgba(245,240,232,0.98);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 16px 40px rgba(13,13,13,0.08);
+  box-shadow: 0 12px 30px rgba(13,13,13,0.08);
 }
 .nav-logo-btn {
   background: none; border: none; cursor: none;
   display: flex; align-items: center; gap: 12px;
 }
 .nav-logo {
-  width: 44px; height: 44px; border-radius: 14px; background: var(--ink);
+  width: 42px; height: 42px; border-radius: 12px; background: var(--ink);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-serif); font-size: 18px; color: var(--cream);
-  letter-spacing: 0.02em; box-shadow: 0 10px 24px rgba(13,13,13,0.2);
+  font-family: var(--font-display); font-size: 16px; color: var(--cream);
+  letter-spacing: 0.04em; box-shadow: 0 8px 18px rgba(13,13,13,0.18);
 }
 .nav-links-desktop {
-  display: flex; align-items: center; gap: 6px;
-  padding: 6px; border-radius: 999px; background: #fff;
-  border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(13,13,13,0.06);
+  display: flex; align-items: center; gap: 24px;
+  padding: 0; border-radius: 0; background: transparent;
+  border: none; box-shadow: none;
 }
 .nav-link {
-  font-size: 11px; font-weight: 700; color: var(--muted);
-  letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  letter-spacing: 0.18em; text-transform: uppercase;
   background: transparent; border: none; cursor: none;
-  padding: 8px 14px; position: relative; border-radius: 999px;
+  padding: 10px 0; position: relative;
   transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
-  display: inline-flex; align-items: center;
+  display: inline-flex; align-items: center; opacity: 0.7;
 }
-.nav-link::after { display: none; }
-.nav-link:hover { color: var(--ink); background: var(--cream2); }
-.nav-link.active {
-  color: var(--cream); background: var(--ink);
-  box-shadow: 0 8px 18px rgba(13,13,13,0.18);
+.nav-link::after {
+  content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 0;
+  background: var(--red); transition: width 0.25s cubic-bezier(0.16,1,0.3,1);
 }
+.nav-link:hover { color: var(--ink); opacity: 1; }
+.nav-link:hover::after { width: 100%; }
+.nav-link.active { color: var(--ink); opacity: 1; }
+.nav-link.active::after { width: 100%; }
 
 .nav-links { display: none; }
 
@@ -365,6 +367,15 @@ export default function App() {
   const isHome = location.pathname === "/";
   const isAdmin = location.pathname.startsWith("/admin");
 
+  const handleBlogBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+    window.scrollTo({ top: 0 });
+  };
+
   useEffect(() => {
     async function load() {
       const cachedProfile = readCache(CACHE_KEYS.profile);
@@ -413,6 +424,24 @@ export default function App() {
   }, [isHome]);
 
   useEffect(() => {
+    if (!isHome) return;
+    if (!location.hash) return;
+    let tries = 0;
+    const tryScroll = () => {
+      const el = document.querySelector(location.hash);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+      if (tries < 20) {
+        tries += 1;
+        requestAnimationFrame(tryScroll);
+      }
+    };
+    tryScroll();
+  }, [isHome, location.hash]);
+
+  useEffect(() => {
     if (isAdmin) return;
     const fn = () => setShowTop(window.scrollY > 400);
     window.addEventListener("scroll", fn);
@@ -420,14 +449,14 @@ export default function App() {
   }, [isAdmin]);
 
   useEffect(() => {
-    if (isAdmin) return;
+    if (isAdmin || !isHome) return;
     const obs = new IntersectionObserver(
       (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("in"); }),
       { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
     );
     document.querySelectorAll(".rv, .rv-l, .rv-r").forEach(el => obs.observe(el));
     return () => obs.disconnect();
-  }, [isAdmin]);
+  }, [isAdmin, isHome]);
 
   useEffect(() => {
     if (isAdmin) return;
@@ -458,7 +487,7 @@ export default function App() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<HomePage info={info} projects={projects} />} />
-          <Route path="/blog" element={<BlogPage posts={blogPosts} onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
+          <Route path="/blog" element={<BlogPage posts={blogPosts} onBack={handleBlogBack} />} />
           <Route path="/admin/*" element={<AdminPage onBack={() => { navigate("/"); window.scrollTo({ top: 0 }); }} />} />
           <Route path="*" element={<NotFound onHome={() => navigate("/")} />} />
         </Routes>

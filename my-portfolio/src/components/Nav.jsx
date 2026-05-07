@@ -7,6 +7,7 @@ export default function Nav({ active }) {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
+  const activeKey = isHome ? active : null;
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60);
@@ -31,8 +32,7 @@ export default function Nav({ active }) {
       return;
     }
     if (!isHome) {
-      navigate("/");
-      setTimeout(() => document.querySelector(link.href)?.scrollIntoView({ behavior: "smooth" }), 100);
+      navigate({ pathname: "/", hash: link.href });
       return;
     }
     document.querySelector(link.href)?.scrollIntoView({ behavior: "smooth" });
@@ -50,7 +50,7 @@ export default function Nav({ active }) {
         <div className="nav-links-desktop">
           {links.map(l => (
             <button key={l.key} onClick={() => handleLink(l)}
-              className={`nav-link${active===l.key||(l.key==="blog"&&location.pathname==="/blog")?" active":""}`}>
+              className={`nav-link${activeKey===l.key||(l.key==="blog"&&location.pathname==="/blog")?" active":""}`}>
               {l.label}
             </button>
           ))}
@@ -66,7 +66,7 @@ export default function Nav({ active }) {
       {open && <div onClick={() => setOpen(false)} style={{ position:"fixed", inset:0, zIndex:1099, background:"rgba(0,0,0,0.4)" }} />}
       <div className={`nav-links ${open ? 'open' : ''}`}>
         {links.map(l => (
-          <button key={l.key} onClick={() => handleLink(l)} className={`nav-link ${active === l.key || (l.key === "blog" && location.pathname === "/blog") ? "active" : ""}`}>
+          <button key={l.key} onClick={() => handleLink(l)} className={`nav-link ${activeKey === l.key || (l.key === "blog" && location.pathname === "/blog") ? "active" : ""}`}>
             {l.label}
           </button>
         ))}

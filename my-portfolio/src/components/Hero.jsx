@@ -20,6 +20,12 @@ export default function Hero({ info }) {
     return () => clearTimeout(t);
   }, [displayed, typing, roleIdx]);
 
+  useEffect(() => {
+    const src = info?.profile_pic || "/profile.png";
+    const img = new Image();
+    img.src = src;
+  }, [info?.profile_pic]);
+
   const esc = (s) => (s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
   const generateCV = () => {
@@ -107,9 +113,10 @@ export default function Hero({ info }) {
               border: "6px solid #fff", boxShadow: "0 24px 64px rgba(0,0,0,0.1)",
               display: "flex", alignItems: "center", justifyContent: "center", background: "var(--cream2)"
             }}>
-              <img src={info?.profile_pic || "/profile.png"} alt={info?.name || "Ali Hassan"} 
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} 
-                loading="eager"
+              <img src={info?.profile_pic || "/profile.png"} alt={info?.name || "Ali Hassan"}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
+                loading="eager" fetchpriority="high" decoding="async"
+                width="420" height="420"
                 onError={(e) => { e.currentTarget.src = "/profile.png"; }}
               />
             </div>
