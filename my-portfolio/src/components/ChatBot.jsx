@@ -28,6 +28,7 @@ export default function ChatBot({ info, projects = [] }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const [cooldown, setCooldown] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -53,12 +54,13 @@ export default function ChatBot({ info, projects = [] }) {
 
   const sendMessage = async (value = input) => {
     const text = value.trim();
-    if (!text || typing) return;
+    if (!text || typing || cooldown) return;
 
     const nextMessages = [...messages, { role: "user", text }];
     setMessages(nextMessages);
     setInput("");
     setTyping(true);
+    setCooldown(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -98,6 +100,7 @@ export default function ChatBot({ info, projects = [] }) {
       ]);
     } finally {
       setTyping(false);
+      window.setTimeout(() => setCooldown(false), 1200);
     }
   };
 
@@ -159,10 +162,10 @@ export default function ChatBot({ info, projects = [] }) {
               onChange={(event) => setInput(event.target.value)}
               placeholder="Ask about projects, skills, contact..."
               aria-label="Message"
-              disabled={typing}
+              disabled={typing || cooldown}
             />
-            <button type="submit" aria-label="Send message" disabled={typing}>
-              {typing ? "Wait" : "Send"}
+            <button type="submit" aria-label="Send message" disabled={typing || cooldown}>
+              {typing || cooldown ? "Wait" : "Send"}
             </button>
           </form>
         </section>

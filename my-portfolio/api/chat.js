@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-2.0-flash";
 const FALLBACK_MODEL = "gemini-2.0-flash";
 const MAX_MESSAGES = 10;
 const MAX_PROJECTS = 8;
