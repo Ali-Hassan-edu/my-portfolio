@@ -11,6 +11,19 @@ function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
+async function readApiResponse(response) {
+  const raw = await response.text();
+  if (!raw) return {};
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {
+      error: raw.length > 180 ? `${raw.slice(0, 180)}...` : raw,
+    };
+  }
+}
+
 export default function ChatBot({ info, projects = [] }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -62,8 +75,13 @@ export default function ChatBot({ info, projects = [] }) {
         }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Chat request failed");
+      const data = await readApiResponse(response);
+      if (!response.ok) {
+        const message = response.status === 429
+          ? "Gemini quota or rate limit is reached right now. Please try again later."
+          : data.error || `Chat request failed with status ${response.status}`;
+        throw new Error(message);
+      }
 
       setMessages((current) => [
         ...current,
@@ -74,7 +92,7 @@ export default function ChatBot({ info, projects = [] }) {
         ...current,
         {
           role: "assistant",
-          text: "The Gemini chat is not connected yet. Please check GEMINI_API_KEY and deployment settings, then try again.",
+          text: error instanceof Error ? error.message : "The Gemini chat is not connected yet. Please check deployment settings.",
           error: error instanceof Error ? error.message : "Unknown error",
         },
       ]);

@@ -1,4 +1,5 @@
 const DEFAULT_MODEL = "gemini-2.5-flash";
+const FALLBACK_MODEL = "gemini-2.0-flash";
 const MAX_MESSAGES = 10;
 const MAX_PROJECTS = 8;
 
@@ -62,6 +63,45 @@ function getOutputText(data) {
     .trim();
 }
 
+function getGeminiErrorMessage(status, data) {
+  const raw = data.error?.message || "Gemini request failed";
+  if (status === 429) {
+    return "Gemini rate limit or quota was reached for this API key. Check Google AI Studio quota/billing or wait and try again.";
+  }
+  if (status === 400 && /model|not found|unsupported/i.test(raw)) {
+    return "The selected Gemini model is not available for this API key. Try GEMINI_MODEL=gemini-2.0-flash or gemini-2.5-flash.";
+  }
+  if (status === 403) {
+    return "Gemini rejected this API key or project access. Create a new key in Google AI Studio and update Vercel.";
+  }
+  return raw;
+}
+
+async function callGemini({ apiKey, model, systemPrompt, contents }) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        contents,
+        generationConfig: {
+          maxOutputTokens: 260,
+          temperature: 0.6,
+        },
+      }),
+    }
+  );
+  const data = await response.json();
+  return { response, data };
+}
+
 export default async function handler(req, res) {
   const env = globalThis.process?.env || {};
   const apiKey = env.GEMINI_API_KEY || env.VITE_GEMINI_API_KEY;
@@ -107,33 +147,18 @@ export default async function handler(req, res) {
       `Portfolio context: ${JSON.stringify(portfolioContext)}`,
     ].join("\n");
     const model = env.GEMINI_MODEL || env.VITE_GEMINI_MODEL || DEFAULT_MODEL;
+    let { response: geminiResponse, data } = await callGemini({ apiKey, model, systemPrompt, contents });
 
-    const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-      {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: systemPrompt }],
-        },
-        contents,
-        generationConfig: {
-          maxOutputTokens: 260,
-          temperature: 0.6,
-        },
-      }),
+    if (!geminiResponse.ok && geminiResponse.status === 400 && model !== FALLBACK_MODEL) {
+      const retry = await callGemini({ apiKey, model: FALLBACK_MODEL, systemPrompt, contents });
+      geminiResponse = retry.response;
+      data = retry.data;
     }
-    );
-
-    const data = await geminiResponse.json();
 
     if (!geminiResponse.ok) {
       return res.status(geminiResponse.status).json({
-        error: data.error?.message || "Gemini request failed",
+        error: getGeminiErrorMessage(geminiResponse.status, data),
+        status: geminiResponse.status,
       });
     }
 
