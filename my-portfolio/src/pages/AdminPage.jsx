@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { getProfile, updateProfile } from "../services/profileService";
 import { getProjects, addProject, updateProject, deleteProject } from "../services/projectsService";
 import { getBlogPosts, addBlogPost, updateBlogPost, deleteBlogPost } from "../services/blogService";
@@ -169,8 +169,13 @@ export default function AdminPage({ onBack }) {
   const [appProjects, setAppProjects] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const supabaseReady = Boolean(supabase);
 
   useEffect(() => {
+    if (!supabaseReady) {
+      const id = window.setTimeout(() => setAuthLoading(false), 0);
+      return () => window.clearTimeout(id);
+    }
     let alive = true;
     supabase.auth.getSession().then(({ data }) => {
       if (!alive) return;
@@ -185,12 +190,14 @@ export default function AdminPage({ onBack }) {
       alive = false;
       authListener?.subscription?.unsubscribe();
     };
-  }, []);
+  }, [supabaseReady]);
 
   const adminAllowed = isAdminUser(user);
 
-  async function loadAll() {
+  const loadAll = useCallback(async function loadAll() {
+    if (!supabaseReady) return;
     setLoading(true);
+    try {
     const [prof, web, app, blogs] = await Promise.all([
       getProfile(),
       getProjects("web"),
@@ -208,16 +215,24 @@ export default function AdminPage({ onBack }) {
     setWebProjects(web);
     setAppProjects(app);
     setBlogPosts(blogs);
-    setLoading(false);
-  }
+    } catch (error) {
+      setAuthError(error instanceof Error ? error.message : "Could not load admin data.");
+    } finally {
+      setLoading(false);
+    }
+  }, [supabaseReady]);
 
   useEffect(() => {
     if (!user || !adminAllowed) return;
     const id = window.setTimeout(() => loadAll(), 0);
     return () => window.clearTimeout(id);
-  }, [user, adminAllowed]);
+  }, [user, adminAllowed, loadAll]);
 
   async function login() {
+    if (!supabaseReady) {
+      setAuthError("Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
+      return;
+    }
     if (!authForm.email || !authForm.password) {
       setAuthError("Email and password are required");
       return;
@@ -233,6 +248,10 @@ export default function AdminPage({ onBack }) {
   }
 
   async function logout() {
+    if (!supabaseReady) {
+      setUser(null);
+      return;
+    }
     await supabase.auth.signOut();
     setUser(null);
   }
@@ -248,6 +267,27 @@ export default function AdminPage({ onBack }) {
         <style>{ADMIN_CSS}</style>
         <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, color: "var(--muted)" }}>
           Checking admin access…
+        </div>
+      </>
+    );
+  }
+
+  if (!supabaseReady) {
+    return (
+      <>
+        <style>{ADMIN_CSS}</style>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div className="login-card">
+            <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 12, marginBottom: 24, fontWeight: 600 }}>Back to Portfolio</button>
+            <h2 style={{ fontFamily: "Syne, sans-serif", fontSize: 26, fontWeight: 800, marginBottom: 10, color: "var(--ink)" }}>Supabase Not Configured</h2>
+            <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.7, marginBottom: 20 }}>
+              Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env` locally and in Vercel Environment Variables, then restart or redeploy.
+            </p>
+            <div style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.8, background: "var(--cream2)", border: "1px solid var(--border)", padding: 14 }}>
+              VITE_SUPABASE_URL=...<br />
+              VITE_SUPABASE_ANON_KEY=...
+            </div>
+          </div>
         </div>
       </>
     );
@@ -399,6 +439,11 @@ export default function AdminPage({ onBack }) {
           </div>
 
           <div className="admin-content">
+            {authError && (
+              <div style={{ padding: "12px 16px", marginBottom: 18, background: "#FFEBEB", border: "1px solid #FFCDCD", color: "var(--red)", borderRadius: 10, fontSize: 13, fontWeight: 600 }}>
+                {authError}
+              </div>
+            )}
             {loading ? (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "80px 0", color: "var(--muted)", fontSize: 14, gap: 10 }}>
                 Loading data…

@@ -344,7 +344,7 @@ textarea { resize: none; }
 
 .portfolio-chatbot {
   position: fixed;
-  left: clamp(16px, 3vw, 32px);
+  right: clamp(16px, 3vw, 32px);
   bottom: clamp(16px, 3vw, 32px);
   z-index: 1500;
   font-family: var(--font-body);
@@ -506,7 +506,6 @@ textarea { resize: none; }
   .blog-grid { grid-template-columns: 1fr; }
   .blog-detail { padding-top: 32px; }
   .portfolio-chatbot {
-    left: 12px;
     right: 12px;
     bottom: 12px;
   }

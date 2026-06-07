@@ -1,7 +1,6 @@
-const DEFAULT_MODEL = "gemini-2.0-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 const MAX_MESSAGES = 10;
 const MAX_PROJECTS = 8;
-const env = globalThis.process?.env || {};
 
 function cleanText(value, fallback = "") {
   return String(value || fallback).replace(/\s+/g, " ").trim();
@@ -64,12 +63,24 @@ function getOutputText(data) {
 }
 
 export default async function handler(req, res) {
+  const env = globalThis.process?.env || {};
+  const apiKey = env.GEMINI_API_KEY || env.VITE_GEMINI_API_KEY;
+
+  if (req.method === "GET") {
+    return res.status(200).json({
+      ok: true,
+      provider: "gemini",
+      configured: Boolean(apiKey),
+      model: env.GEMINI_MODEL || env.VITE_GEMINI_MODEL || DEFAULT_MODEL,
+    });
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "GET, POST");
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (!env.GEMINI_API_KEY) {
+  if (!apiKey) {
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured" });
   }
 
@@ -95,7 +106,7 @@ export default async function handler(req, res) {
       "Do not invent project names, employment history, prices, private contact details, or credentials.",
       `Portfolio context: ${JSON.stringify(portfolioContext)}`,
     ].join("\n");
-    const model = env.GEMINI_MODEL || DEFAULT_MODEL;
+    const model = env.GEMINI_MODEL || env.VITE_GEMINI_MODEL || DEFAULT_MODEL;
 
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
@@ -103,7 +114,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-goog-api-key": env.GEMINI_API_KEY,
+        "x-goog-api-key": apiKey,
       },
       body: JSON.stringify({
         systemInstruction: {
