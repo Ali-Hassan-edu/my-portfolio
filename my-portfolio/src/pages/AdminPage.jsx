@@ -23,6 +23,9 @@ const EMPTY_BLOG = {
 /* ── ADMIN STYLES ── */
 const ADMIN_CSS = `
 .admin-wrap { min-height:100vh; padding-top:64px; display:flex; background:var(--cream); color:var(--ink); }
+.admin-wrap, .admin-wrap * { cursor: auto !important; }
+.admin-wrap button, .admin-wrap a, .admin-wrap label, .admin-wrap select, .admin-wrap input[type="file"] { cursor: pointer !important; }
+.admin-wrap input, .admin-wrap textarea { cursor: text !important; }
 .admin-sidebar {
   width:240px; flex-shrink:0; background:var(--cream);
   border-right:1px solid var(--border); position:sticky;
@@ -450,11 +453,21 @@ export default function AdminPage({ onBack }) {
               </div>
             ) : (
               <>
-                {tab === "dashboard" && <DashboardTab webProjects={webProjects} appProjects={appProjects} blogPosts={blogPosts} profile={profile} onTabChange={setTab} />}
-                {tab === "profile" && <ProfileTab profile={profile} setProfile={setProfile} showMsg={showMsg} />}
-                {tab === "projects" && <ProjectsTab webProjects={webProjects} appProjects={appProjects} setWebProjects={setWebProjects} setAppProjects={setAppProjects} showMsg={showMsg} />}
-                {tab === "blog" && <BlogTab posts={blogPosts} setPosts={setBlogPosts} showMsg={showMsg} />}
-                {tab === "settings" && <SettingsTab showMsg={showMsg} />}
+                <div style={{ display: tab === "dashboard" ? "block" : "none" }}>
+                  <DashboardTab webProjects={webProjects} appProjects={appProjects} blogPosts={blogPosts} profile={profile} onTabChange={setTab} />
+                </div>
+                <div style={{ display: tab === "profile" ? "block" : "none" }}>
+                  <ProfileTab profile={profile} setProfile={setProfile} showMsg={showMsg} />
+                </div>
+                <div style={{ display: tab === "projects" ? "block" : "none" }}>
+                  <ProjectsTab webProjects={webProjects} appProjects={appProjects} setWebProjects={setWebProjects} setAppProjects={setAppProjects} showMsg={showMsg} />
+                </div>
+                <div style={{ display: tab === "blog" ? "block" : "none" }}>
+                  <BlogTab posts={blogPosts} setPosts={setBlogPosts} showMsg={showMsg} />
+                </div>
+                <div style={{ display: tab === "settings" ? "block" : "none" }}>
+                  <SettingsTab showMsg={showMsg} />
+                </div>
               </>
             )}
           </div>
@@ -781,12 +794,16 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
                 <div style={{ display: "flex", gap: 8 }}>
                   <input value={screenshotInput} onChange={(e) => setScreenshotInput(e.target.value)} placeholder="https://…" onKeyDown={(e) => e.key === "Enter" && addScreenshot()} style={{ flex: 1 }} />
                   <label className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, cursor: "pointer", display:"flex", alignItems:"center", whiteSpace:"nowrap" }}>
-                    Upload File
-                    <input type="file" accept="image/*" onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if(!file) return;
-                      try { const url = await uploadImage(file); setForm(f => ({...f, screenshots: [...(f.screenshots||[]), url]})); }
+                    Upload Files
+                    <input type="file" accept="image/*" multiple onChange={async (e) => {
+                      const files = Array.from(e.target.files || []);
+                      if(files.length === 0) return;
+                      try {
+                        const urls = await Promise.all(files.map((file) => uploadImage(file)));
+                        setForm(f => ({...f, screenshots: [...(f.screenshots||[]), ...urls.filter(Boolean)]}));
+                      }
                       catch(err) { alert(err.message); }
+                      finally { e.target.value = ""; }
                     }} style={{ display: "none" }} />
                   </label>
                   <button onClick={addScreenshot} className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, whiteSpace: "nowrap" }}>Add URL</button>
