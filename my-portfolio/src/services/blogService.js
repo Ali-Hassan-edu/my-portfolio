@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 export async function getBlogPosts(publishedOnly = true) {
+  if (!supabase) return [];
   let query = supabase.from("blog_posts").select("*").order("created_at", { ascending: false });
   if (publishedOnly) query = query.eq("published", true);
   const { data, error } = await query;
@@ -9,6 +10,7 @@ export async function getBlogPosts(publishedOnly = true) {
 }
 
 export async function getBlogPost(id) {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from("blog_posts")
     .select("*")
@@ -19,6 +21,7 @@ export async function getBlogPost(id) {
 }
 
 export async function addBlogPost(post) {
+  if (!supabase) throw new Error("Supabase is not configured.");
   const { data, error } = await supabase
     .from("blog_posts")
     .insert([post])
@@ -29,6 +32,7 @@ export async function addBlogPost(post) {
 }
 
 export async function updateBlogPost(id, post) {
+  if (!supabase) throw new Error("Supabase is not configured.");
   const { data, error } = await supabase
     .from("blog_posts")
     .update(post)
@@ -40,6 +44,7 @@ export async function updateBlogPost(id, post) {
 }
 
 export async function deleteBlogPost(id) {
+  if (!supabase) throw new Error("Supabase is not configured.");
   const { error } = await supabase.from("blog_posts").delete().eq("id", id);
   if (error) throw error;
 }

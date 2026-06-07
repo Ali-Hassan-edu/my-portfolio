@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { Component, useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
@@ -8,6 +8,7 @@ import Experience from "./components/Experience";
 import Projects from "./components/Projects";
 import Skills from "./components/Skills";
 import Contact from "./components/Contact";
+import ChatBot from "./components/ChatBot";
 import { getProfile } from "./services/profileService";
 import { getProjects } from "./services/projectsService";
 import { getBlogPosts } from "./services/blogService";
@@ -341,6 +342,157 @@ textarea { resize: none; }
 .card-editorial:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
 .card-editorial:hover::after { transform: scaleX(1); }
 
+.portfolio-chatbot {
+  position: fixed;
+  left: clamp(16px, 3vw, 32px);
+  bottom: clamp(16px, 3vw, 32px);
+  z-index: 1500;
+  font-family: var(--font-body);
+}
+.chat-launcher {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1px solid rgba(245,240,232,0.28);
+  background: var(--ink);
+  color: var(--cream);
+  box-shadow: 0 18px 38px rgba(13,13,13,0.24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.chat-launcher:hover { background: var(--red); transform: translateY(-3px); }
+.chat-launcher span {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.chat-panel {
+  width: min(380px, calc(100vw - 32px));
+  max-height: min(620px, calc(100vh - 112px));
+  margin-bottom: 14px;
+  background: rgba(245,240,232,0.98);
+  border: 1px solid var(--border);
+  box-shadow: 0 28px 80px rgba(13,13,13,0.22);
+  display: grid;
+  grid-template-rows: auto minmax(160px, 1fr) auto auto auto;
+  overflow: hidden;
+}
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px;
+  background: var(--ink);
+  color: var(--cream);
+}
+.chat-eyebrow {
+  color: rgba(245,240,232,0.62);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.chat-header h2 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+}
+.chat-icon-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(245,240,232,0.22);
+  color: var(--cream);
+  background: transparent;
+  cursor: none;
+  font-size: 18px;
+  line-height: 1;
+}
+.chat-messages {
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chat-message {
+  max-width: 86%;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.chat-message.bot {
+  align-self: flex-start;
+  background: #fff;
+  color: var(--ink2);
+}
+.chat-message.user {
+  align-self: flex-end;
+  background: var(--red);
+  color: var(--cream);
+  border-color: var(--red);
+}
+.chat-quick-actions,
+.chat-jumps {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+}
+.chat-quick-actions button,
+.chat-jumps button {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: none;
+}
+.chat-jumps button {
+  background: var(--cream2);
+  color: var(--muted);
+}
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--cream2);
+}
+.chat-form input {
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  padding: 12px;
+  font-size: 13px;
+  outline: none;
+}
+.chat-form input:focus { border-color: var(--red); }
+.chat-form button {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 0 15px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: none;
+}
+.chat-form input:disabled,
+.chat-form button:disabled {
+  opacity: 0.62;
+}
+
 @media (max-width: 480px) {
   .container { padding: 0 20px; }
   .display { font-size: 48px; }
@@ -353,6 +505,20 @@ textarea { resize: none; }
   .blog-toolbar input { max-width: 100% !important; }
   .blog-grid { grid-template-columns: 1fr; }
   .blog-detail { padding-top: 32px; }
+  .portfolio-chatbot {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+  .chat-panel {
+    width: 100%;
+    max-height: calc(100vh - 92px);
+  }
+  .chat-launcher {
+    margin-left: auto;
+    width: 54px;
+    height: 54px;
+  }
 }
 `;
 
@@ -494,6 +660,7 @@ export default function App() {
       </Suspense>
 
       {!isAdmin && isHome && <Footer info={info} />}
+      {!isAdmin && <SafeChatBot info={info} projects={projects} />}
 
       {showTop && !isAdmin && (
         <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -544,4 +711,32 @@ function RouteFallback() {
       </div>
     </div>
   );
+}
+
+function SafeChatBot(props) {
+  return (
+    <ChatBotBoundary>
+      <ChatBot {...props} />
+    </ChatBotBoundary>
+  );
+}
+
+class ChatBotBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error("Chatbot failed to render:", error);
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
 }

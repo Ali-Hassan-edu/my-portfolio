@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 
 export async function getProfile() {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from("profiles")
     .select("*")
@@ -10,6 +11,7 @@ export async function getProfile() {
 }
 
 export async function updateProfile(profile) {
+  if (!supabase) throw new Error("Supabase is not configured.");
   const { data, error } = await supabase
     .from("profiles")
     .upsert({ ...profile, id: 1 })

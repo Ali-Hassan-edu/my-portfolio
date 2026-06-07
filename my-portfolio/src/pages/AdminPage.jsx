@@ -189,11 +189,6 @@ export default function AdminPage({ onBack }) {
 
   const adminAllowed = isAdminUser(user);
 
-  useEffect(() => {
-    if (!user || !adminAllowed) return;
-    loadAll();
-  }, [user, adminAllowed]);
-
   async function loadAll() {
     setLoading(true);
     const [prof, web, app, blogs] = await Promise.all([
@@ -215,6 +210,12 @@ export default function AdminPage({ onBack }) {
     setBlogPosts(blogs);
     setLoading(false);
   }
+
+  useEffect(() => {
+    if (!user || !adminAllowed) return;
+    const id = window.setTimeout(() => loadAll(), 0);
+    return () => window.clearTimeout(id);
+  }, [user, adminAllowed]);
 
   async function login() {
     if (!authForm.email || !authForm.password) {
@@ -523,7 +524,10 @@ function ProfileTab({ profile, setProfile, showMsg }) {
   const [form, setForm] = useState(profile || {});
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { setForm(profile || {}); }, [profile]);
+  useEffect(() => {
+    const id = window.setTimeout(() => setForm(profile || {}), 0);
+    return () => window.clearTimeout(id);
+  }, [profile]);
 
   async function save() {
     setSaving(true);

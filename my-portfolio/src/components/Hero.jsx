@@ -15,7 +15,7 @@ export default function Hero({ info }) {
       else t = setTimeout(() => setTyping(false), 2200);
     } else {
       if (displayed.length > 0) t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 35);
-      else { setRoleIdx((i) => (i + 1) % ROLES.length); setTyping(true); }
+      else t = setTimeout(() => { setRoleIdx((i) => (i + 1) % ROLES.length); setTyping(true); }, 0);
     }
     return () => clearTimeout(t);
   }, [displayed, typing, roleIdx]);
@@ -39,6 +39,7 @@ export default function Hero({ info }) {
 </div><script>window.onload=()=>window.print();</script></body></html>`);
     w.document.close();
   };
+  void generateCV;
 
   return (
     <section id="hero" style={{ minHeight:"100vh", display:"flex", flexDirection:"column", justifyContent:"flex-end", paddingTop:64, position:"relative", overflow:"hidden" }}>
