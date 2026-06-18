@@ -80,7 +80,7 @@ export default function ChatBot({ info, projects = [] }) {
       const data = await readApiResponse(response);
       if (!response.ok) {
         const message = response.status === 429
-          ? "Gemini quota or rate limit is reached right now. Please try again later."
+          ? "OpenRouter rate limit is reached right now. Please try again later."
           : data.error || `Chat request failed with status ${response.status}`;
         throw new Error(message);
       }
@@ -94,7 +94,7 @@ export default function ChatBot({ info, projects = [] }) {
         ...current,
         {
           role: "assistant",
-          text: error instanceof Error ? error.message : "The Gemini chat is not connected yet. Please check deployment settings.",
+          text: error instanceof Error ? error.message : "The OpenRouter chat is not connected yet. Please check deployment settings.",
           error: error instanceof Error ? error.message : "Unknown error",
         },
       ]);
