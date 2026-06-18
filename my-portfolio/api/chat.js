@@ -84,6 +84,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       provider: "openrouter",
+      version: "openrouter-2026-06-18",
       configured: Boolean(apiKey),
       model,
     });
