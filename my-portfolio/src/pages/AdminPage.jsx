@@ -19,6 +19,26 @@ const EMPTY_PROJECT = {
 const EMPTY_BLOG = {
   title: "", description: "", content: "", category: "", tags: "", featured_image: "", published: false,
 };
+const PROJECT_DRAFT_KEY = "admin.projectDraft";
+
+function readProjectDraft() {
+  try {
+    const raw = localStorage.getItem(PROJECT_DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearProjectDraft() {
+  try {
+    localStorage.removeItem(PROJECT_DRAFT_KEY);
+  } catch {
+    // Ignore storage failures.
+  }
+}
 
 /* ── ADMIN STYLES ── */
 const ADMIN_CSS = `
@@ -666,12 +686,22 @@ function ProfileTab({ profile, setProfile, showMsg }) {
 
 /* ── PROJECTS ── */
 function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects, showMsg }) {
-  const [form, setForm] = useState({ ...EMPTY_PROJECT, type: "app" });
+  const savedDraft = readProjectDraft();
+  const [form, setForm] = useState(savedDraft?.form || { ...EMPTY_PROJECT, type: "app" });
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [screenshotInput, setScreenshotInput] = useState("");
+  const [screenshotInput, setScreenshotInput] = useState(savedDraft?.screenshotInput || "");
 
   const allProjects = [...appProjects.map(p => ({...p, type: 'app'})), ...webProjects.map(p => ({...p, type: 'web'}))].sort((a, b) => parseInt(b.year || 0) - parseInt(a.year || 0));
+
+  useEffect(() => {
+    if (editing) return;
+    try {
+      localStorage.setItem(PROJECT_DRAFT_KEY, JSON.stringify({ form, screenshotInput }));
+    } catch {
+      // Ignore storage failures.
+    }
+  }, [editing, form, screenshotInput]);
 
   function addScreenshot() {
     if (!screenshotInput.trim()) return;
@@ -722,6 +752,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
       }
       setForm({ ...EMPTY_PROJECT, type: "app" });
       setScreenshotInput("");
+      clearProjectDraft();
     } catch (e) { alert("Error: " + e.message); }
     finally { setSaving(false); }
   }
@@ -737,8 +768,8 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
     catch (e) { alert("Error: " + e.message); }
   }
 
-  function startEdit(p) { setEditing(p); setForm({ ...EMPTY_PROJECT, ...p, type: p.type || (p.platform ? "app" : "web") }); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function cancelEdit() { setEditing(null); setForm({ ...EMPTY_PROJECT, type: "app" }); setScreenshotInput(""); }
+  function startEdit(p) { setEditing(p); clearProjectDraft(); setForm({ ...EMPTY_PROJECT, ...p, type: p.type || (p.platform ? "app" : "web") }); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function cancelEdit() { setEditing(null); setForm({ ...EMPTY_PROJECT, type: "app" }); setScreenshotInput(""); clearProjectDraft(); }
 
   return (
     <div>
