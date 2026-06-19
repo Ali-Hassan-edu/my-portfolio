@@ -1,6 +1,6 @@
 const DEFAULT_MODEL = "nex-agi/nex-n2-pro:free";
-const MAX_MESSAGES = 10;
-const MAX_PROJECTS = 8;
+const MAX_MESSAGES = 4;
+const MAX_PROJECTS = 5;
 
 function cleanText(value, fallback = "") {
   return String(value || fallback).replace(/\s+/g, " ").trim();
@@ -13,6 +13,7 @@ function compactProject(project) {
     category: cleanText(project.category || project.platform),
     year: cleanText(project.year),
     description: cleanText(project.description || project.tagline).slice(0, 260),
+    tagline: cleanText(project.tagline).slice(0, 120),
     technologies: cleanText(project.technologies),
   };
 }
@@ -112,13 +113,17 @@ export default async function handler(req, res) {
       "You are Ali Hassan's portfolio chatbot on his personal website.",
       "Answer as a helpful, concise assistant for visitors, recruiters, and clients.",
       "Use only the portfolio context provided below. If something is not in the context, say you do not have that detail and suggest contacting Ali.",
-      "Keep answers under 90 words unless the visitor asks for detail.",
+      "Keep answers under 55 words unless the visitor asks for detail.",
       "Do not invent project names, employment history, prices, private contact details, or credentials.",
       `Portfolio context: ${JSON.stringify(portfolioContext)}`,
     ].join("\n");
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
+
     const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
@@ -132,10 +137,11 @@ export default async function handler(req, res) {
           ...normalizeMessages(messages),
           { role: "user", content: latestMessage },
         ],
-        max_tokens: 260,
+        max_tokens: 150,
         temperature: 0.6,
       }),
     });
+    clearTimeout(timeoutId);
 
     const data = await openRouterResponse.json();
 
@@ -151,6 +157,11 @@ export default async function handler(req, res) {
       reply: reply || "I could not create a response. Please try again.",
     });
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      return res.status(504).json({
+        error: "OpenRouter took too long to respond. Try a faster model or try again.",
+      });
+    }
     return res.status(500).json({
       error: error instanceof Error ? error.message : "Unexpected server error",
     });

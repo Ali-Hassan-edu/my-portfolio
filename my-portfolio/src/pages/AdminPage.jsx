@@ -40,6 +40,14 @@ function clearProjectDraft() {
   }
 }
 
+function writeProjectDraft(form, screenshotInput = "") {
+  try {
+    localStorage.setItem(PROJECT_DRAFT_KEY, JSON.stringify({ form, screenshotInput }));
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
 /* ── ADMIN STYLES ── */
 const ADMIN_CSS = `
 .admin-wrap { min-height:100vh; padding-top:64px; display:flex; background:var(--cream); color:var(--ink); }
@@ -633,7 +641,14 @@ function ProfileTab({ profile, setProfile, showMsg }) {
     <div>
       <SectionHeading title="Profile Management" subtitle="Update your personal information" />
       <div style={{ maxWidth: 640 }}>
-        <div className="admin-card admin-form-card">
+        <div
+          className="admin-card admin-form-card"
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && event.target?.tagName !== "TEXTAREA") {
+              event.preventDefault();
+            }
+          }}
+        >
           <div className="admin-grid-2" style={{ marginBottom: 14 }}>
             {fields.map((f) => (
               <div key={f.k} style={{ gridColumn: f.full ? "1/-1" : undefined }}>
@@ -696,11 +711,19 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
 
   useEffect(() => {
     if (editing) return;
-    try {
-      localStorage.setItem(PROJECT_DRAFT_KEY, JSON.stringify({ form, screenshotInput }));
-    } catch {
-      // Ignore storage failures.
-    }
+    writeProjectDraft(form, screenshotInput);
+  }, [editing, form, screenshotInput]);
+
+  useEffect(() => {
+    const saveDraftBeforeLeave = () => {
+      if (!editing) writeProjectDraft(form, screenshotInput);
+    };
+    window.addEventListener("pagehide", saveDraftBeforeLeave);
+    window.addEventListener("visibilitychange", saveDraftBeforeLeave);
+    return () => {
+      window.removeEventListener("pagehide", saveDraftBeforeLeave);
+      window.removeEventListener("visibilitychange", saveDraftBeforeLeave);
+    };
   }, [editing, form, screenshotInput]);
 
   function addScreenshot() {
@@ -776,7 +799,14 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
       <SectionHeading title="My Projects" subtitle="Manage your web and app projects" />
       <div className="admin-form-grid">
         {/* Form */}
-        <div className="admin-card admin-form-card">
+        <div
+          className="admin-card admin-form-card"
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && event.target?.tagName !== "TEXTAREA") {
+              event.preventDefault();
+            }
+          }}
+        >
           <div style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 700, marginBottom: 20, color: "var(--ink)" }}>
             {editing ? "✏️ Edit Project" : "➕ Add New Project"}
           </div>
@@ -831,13 +861,17 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
                       if(files.length === 0) return;
                       try {
                         const urls = await Promise.all(files.map((file) => uploadImage(file)));
-                        setForm(f => ({...f, screenshots: [...(f.screenshots||[]), ...urls.filter(Boolean)]}));
+                        setForm(f => {
+                          const nextForm = {...f, screenshots: [...(f.screenshots||[]), ...urls.filter(Boolean)]};
+                          writeProjectDraft(nextForm, screenshotInput);
+                          return nextForm;
+                        });
                       }
                       catch(err) { alert(err.message); }
                       finally { e.target.value = ""; }
                     }} style={{ display: "none" }} />
                   </label>
-                  <button onClick={addScreenshot} className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, whiteSpace: "nowrap" }}>Add URL</button>
+                  <button type="button" onClick={addScreenshot} className="btn-secondary" style={{ padding: "8px 14px", fontSize: 12, whiteSpace: "nowrap" }}>Add URL</button>
                 </div>
                 {(form.screenshots || []).length > 0 && (
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
@@ -845,6 +879,7 @@ function ProjectsTab({ webProjects, appProjects, setWebProjects, setAppProjects,
                       <div key={i} style={{ position: "relative" }}>
                         <img src={s} alt="" style={{ width: 52, height: 78, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)" }} />
                         <button
+                          type="button"
                           onClick={() => removeScreenshot(i)}
                           style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#0ea5e9", border: "none", color: "var(--ink)", fontSize: 11, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
                         >×</button>

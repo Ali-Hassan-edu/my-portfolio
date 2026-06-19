@@ -138,7 +138,7 @@ export default function ChatBot({ info, projects = [] }) {
 
           <div className="chat-quick-actions">
             {QUICK_PROMPTS.map((prompt) => (
-              <button key={prompt} onClick={() => sendMessage(prompt)}>
+              <button key={prompt} onClick={() => sendMessage(prompt)} disabled={typing || cooldown}>
                 {prompt}
               </button>
             ))}
